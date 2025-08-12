@@ -1,0 +1,230 @@
+<!-- BEGIN MENUBAR-->
+<div id="menubar" class="menubar-inverse animate">
+	<div class="menubar-scroll-panel">
+
+		<!-- BEGIN MAIN MENU -->
+		<ul id="main-menu" class="gui-controls">
+
+			<!-- BEGIN MANTENIMIENTO -->
+			<!-- BEGIN MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-sliders"></i></div>
+					<span class="title">Mantenimiento</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					
+					<li class="gui-folder">
+						<a>
+							<span class="title">Eventos</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							
+							<li class="gui-folder">
+								<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/ListaEventos/AgregarEvento.php" >
+									<span class="title">Agregar Evento</span>
+								</a>
+							</li><!--end /menu-li -->
+							<li class="gui-folder">
+								<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/ListaEventos/ConsultarEvento.php" >
+									<span class="title">Consultar Mis Eventos</span>
+								</a>
+							</li><!--end /menu-li -->
+							<li class="gui-folder">
+								<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/ListaEventos/Calendario.php" >
+									<span class="title">Calendario</span>
+								</a>
+							</li><!--end /menu-li -->
+							<li class="gui-folder">
+								<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/ListaEventos/RequerimientoEvento.php" >
+									<span class="title">Requerimientos Eventos</span>
+								</a>
+							</li><!--end /menu-li -->
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Clientes Credito</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							
+							<li class="gui-folder">
+								<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Mantenimiento/IngresarClienteCredito.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li><!--end /menu-li -->
+							<li class="gui-folder">
+								<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Mantenimiento/EditarCliente.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li><!--end /menu-li -->
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Recetas Nuevas</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Mantenimiento/IngresarReceta.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Mantenimiento/RNew.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+							
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-hdd-o"></i></div>
+					<span class="title">Caja</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Caja/Apertura.php">
+							<span class="title">Apertura de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Caja/Cierre.php">
+							<span class="title">Cierre de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->			
+			
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-receipt"></i></div>
+					<span class="title">Facturación</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Facturacion/VtaNew.php">
+							<span class="title">Factura</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Facturacion/VtaDescripcion.php">
+							<span class="title">Factura por descripción</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Facturacion/VtaDescripcionV.php">
+							<span class="title">Factura Varias Descripciones</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Facturacion/VtaNewSinEvento.php">
+							<span class="title">Factura Sin Evento</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-file-text-o"></i></div>
+					<span class="title">Anticipos</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Anticipos/AgregarAnticipo.php">
+							<span class="title">Nuevo Anticipo</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Anticipos/ListaAnticipos.php">
+							<span class="title">Anticipos de sus Eventos</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-money"></i></div>
+					<span class="title">Cuentas por Cobrar</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/CuentasPorCobrar/RegistrarPago.php">
+							<span class="title">Registrar Pago</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/CuentasPorCobrar/ListaCuentasPorCobrar.php">
+							<span class="title">Lista de Facturas Pendientes</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-ticket"></i></div>
+					<span class="title">Cotizaciones</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Cotizacion/Cotizacion.php" >
+							<span class="title">Nueva</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Cotizacion/Cotizaciones_Realizadas.php" >
+							<span class="title">Realizadas</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-cutlery"></i></div>
+					<span class="title">Degustaciones</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Degustacion/Nueva.php" >
+							<span class="title">Nueva</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a  href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Degustacion/Degustaciones_Realizadas.php" >
+							<span class="title">Pendientes</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-assignment"></i></div>
+					<span class="title">Otros Reportes</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Eventos/Otros_Reportes/CC.php">
+							<span class="title">Cierre de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+		</ul><!--end .main-menu -->
+		<!-- END MAIN MENU -->
+	</div><!--end .menubar-scroll-panel-->
+</div><!--end #menubar-->
+		<!-- END MENUBAR -->

@@ -1,0 +1,800 @@
+<?php include("../../../../../Script/seguridad.php");?>
+<?php $Usuar = $_SESSION["iduser"]; ?>
+<!-- BEGIN MENUBAR-->
+<div id="menubar" class="menubar-inverse ">
+	<div class="menubar-scroll-panel">
+
+		<!-- BEGIN MAIN MENU -->
+		<ul id="main-menu" class="gui-controls">
+
+			<!-- BEGIN MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-sliders"></i></div>
+					<span class="title">Mantenimiento</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/LA.php" >
+							<span class="title">Activos Fijos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/LAMenor.php" >
+							<span class="title">Activos Menores</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/Rango_Descuento_Evento.php" >
+							<span class="title">Rango Descuentos Eventos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Cierre de Cajas</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/CC.php" >
+									<span class="title">Modificar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/Cajas_Abiertas.php" >
+									<span class="title">Cajas sin Cierre</span>
+								</a>
+							</li> 
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Cuentas Bancarias</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/CTAAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/CTA.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Nomenclatura</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/NOMENAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/NOMEN.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Partidas</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/AP.php" >
+									<span class="title">Anular</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/PMod.php" >
+									<span class="title">Mod. Manuales</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/PModA.php" >
+									<span class="title">Mod. Automáticas</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/RImp.php" >
+									<span class="title">Reimpresión</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Períodos Contables</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/PC.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Proveedores</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/PROAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/PRO.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Resoluciones</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/ResAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/Res.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/TC.php" >
+							<span class="title">Tasa Cambio</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/Facturas_CAE.php" >
+							<span class="title">Facturas CAE</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Mantenimiento/ReimpresionFactura.php" >
+							<span class="title">Reimpresión Factura</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-cart-arrow-down"></i></div>
+					<span class="title">Activos Fijos</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/Ingreso.php">
+							<span class="title">Ingreso Póliza (Altas)</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/IngresoB.php">
+							<span class="title">Ingreso Póliza (Bajas)</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/AdjuntarME.php">
+							<span class="title">Ingreso M/E a Póliza</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/LA.php">
+							<span class="title">Lista de Activos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/AC.php">
+							<span class="title">Activos por Colaborador</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/DAC.php" target="_blank">
+							<span class="title">Detalle de Activos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Póliza Depreciación</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/PD.php">
+									<span class="title">Activos por Compras</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/PDD.php">
+									<span class="title">Activos por Donaciones</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Reporte</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/AA.php" target="_blank">
+									<span class="title">Activos</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Activos_Fijos/AB.php" target="_blank">
+									<span class="title">De Baja</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<!-- END MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-pencil-square-o"></i></div>
+					<span class="title">Anticipos</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Anticipos/SA.php">
+							<span class="title">Solicitar Anticipo</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Anticipos/LA.php">
+							<span class="title">Liquidar Anticipo</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Anticipos/OA.php">
+							<span class="title">Contabilizar Anticipos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Anticipos/CL.php">
+							<span class="title">Contabilizar Liquidación</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Anticipos/Int.php">
+							<span class="title">Integración</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<?php if($Usuar==1801788): ?>
+			</li><!--end /menu-li -->
+				<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-money"></i></div>
+					<span class="title">Cuentas por Pagar</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/CuentasPorPagar/ListaCuentasPorPagar.php">
+							<span class="title">Lista de Cuentas Por Pagar</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/CuentasPorPagar/RegistrarPagoProveedor.php">
+							<span class="title">RegistrarPagoProveedor</span>
+						</a>
+					</li><!--end /menu-li -->
+					
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<?php else: ?>
+			<?php endif; ?>
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-money"></i></div>
+					<span class="title">Cuentas por Cobrar</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/CuentasPorCobrar/RegistrarPago.php">
+							<span class="title">Registrar Pago</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/CuentasPorCobrar/ListaCuentasPorCobrar.php">
+							<span class="title">Lista de Facturas Pendientes</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/CuentasPorCobrar/ListaAnticipos.php">
+							<span class="title">Lista de Anticipos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/CuentasPorCobrar/ImprimirrAnticipo.php">
+							<span class="title">Reimprimir Anticipo</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<!-- BEGIN FACTURAS -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-account-balance-wallet"></i></div>
+					<span class="title">Facturas de Compra</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/Adjuntar.php">
+							<span class="title">Adjuntar Documento Pago</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/Ingreso.php">
+							<span class="title">Ingreso de Factura</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/OFactura.php">
+							<span class="title">Contabilizar Factura</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/Solicitud.php">
+							<span class="title">Solicitudes Bodega</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/FacturasRep.php">
+							<span class="title">Reporte de Facturas</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Factura_Especial.php">
+							<span class="title">Factura Especial</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/Nota_CreditoCompra.php">
+							<span class="title">Nota de Crédito Compra</span>
+						</a>
+					</li><!--end /menu-li --> 
+					<li class="gui-folder">
+						<a href="javascript:void(0);">
+						<span class="title">Requisición</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li><a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/BRC.php"><span class="title">Búsqueda Requisición</span></a></li>
+							<li><a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/RC.php"><span class="title">Generar Requisición</span></a></li>
+							<li><a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/MRC.php"><span class="title">Mis Requisiciones</span></a></li>
+							<li><a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Facturas/RCP.php"><span class="title">Pendientes de Atender</span></a></li>
+						</ul><!--end /submenu -->
+					</li>
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<!-- END FACTURAS -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-receipt"></i></div>
+					<span class="title">Facturas de Venta</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+				<!--end
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFB.php">
+							<span class="title">Factura Boletos</span>
+						</a>
+					</li> /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Factura_Administrativa.php">
+							<span class="title">Factura Administrativa</span>
+						</a>
+					</li>
+					<!--
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFCARE.php">
+							<span class="title">Factura CARE</span>
+						</a>
+					</li> 
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFC.php">
+							<span class="title">Factura Chatunmóvil</span>
+						</a>
+					</li> 
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFHT.php">
+							<span class="title">Factura Hotel</span>
+						</a>
+					</li>-->
+					<!--end 
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFE.php">
+							<span class="title">Factura CARE</span>
+						</a>
+					</li>/menu-li 
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFH.php">
+							<span class="title">Factura Helados</span>
+						</a>
+					</li>end /menu-li
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFR.php">
+							<span class="title">Factura Restaurante</span>
+						</a>
+					</li>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFS.php">
+							<span class="title">Factura Souvenir</span>
+						</a>
+					</li>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/IFT.php">
+							<span class="title">Factura Taquilla</span>
+						</a>
+					</li> -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Int.php">
+							<span class="title">Integración Func./Emp.</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Nota_Credito.php">
+							<span class="title">Nota de Crédito</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Nota_Debito.php">
+							<span class="title">Nota de Débito</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Anulacion_Factura.php">
+							<span class="title">Anulación Factura</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Anulacion_FacturaEspecificaForm.php">
+							<span class="title">Anulación Factura Especifica</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Factura_Especial.php">
+							<span class="title">Facturas Especiales</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Recibo_Donacion.php">
+							<span class="title">Recibo de Donación</span>
+						</a>
+					</li><!-- 
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Factura_Venta/Factura_Pesca.php">
+							<span class="title">Facturas Pesca</span>
+						</a>
+					</li>  -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<!-- END FACTURAS -->
+			<!-- BEGIN POLIZAS -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-sort-numeric-asc"></i></div>
+					<span class="title">Inventario</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+				<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Inventario/IF.php">
+					<span class="title">Conteo Inventario Físico</span>
+				</a>
+					</li><!--end /menu-li -->
+			</ul><!--end /submenu -->
+			<ul>
+				<li class="gui-folder">
+			<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Inventario/ViejIF.php">
+				<span class="title">Conteo Inventario Físico Viejo</span>
+			</a>
+				</li><!--end /menu-li -->
+		</ul><!--end /submenu -->
+			<ul>
+				<li class="gui-folder">
+			<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Inventario/ExistenciasPorPuntodeVenta.php">
+				<span class="title">Existencias</span>
+			</a>
+				</li><!--end /menu-li -->
+		</ul><!--end /submenu -->
+		<ul>
+			<li class="gui-folder">
+		<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Inventario/NCAFecha.php">
+			<span class="title">Consultar Notas de Cargo y Abono</span>
+		</a>
+			</li><!--end /menu-li -->
+	</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-file-text-o"></i></div>
+					<span class="title">Póliza</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Polizas/Ingreso.php">
+							<span class="title">Ingreso de Póliza</span>
+						</a>
+					</li><!--end /menu-li -->
+					 <li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Polizas/Donaciones.php">
+							<span class="title">Póliza Donaciones</span>
+						</a>
+					</li> <!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Polizas/PolizaCierreAnual.php">
+							<span class="title">Póliza Cierre</span>
+						</a>
+					</li> <!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-list-alt"></i></div>
+					<span class="title">Reportes Contables</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/BS.php">
+							<span class="title">Balance de Saldos</span>
+						</a>
+					</li><!--end /menu-li -->					
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LC.php">
+							<span class="title">Libro Compras</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LD.php">
+							<span class="title">Libro Diario</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/ComparativaFecha.php">
+							<span class="title">Comparativa Libro Diario</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LD_Sistema.php">
+							<span class="title">Libro Diario Sistema</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LDA.php">
+							<span class="title">Libro Diario Agrupado</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LDA_Sistema.php">
+							<span class="title">Diario Agrupado Sistema</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/ECP.php">
+							<span class="title">Libro Inventario</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LM.php">
+							<span class="title">Libro Mayor</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LMA.php">
+							<span class="title">Libro Mayor Agrupado</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LMA_Sistema.php">
+							<span class="title">Mayor Agrupado Sistema</span>
+						</a>
+					</li><!--end /menu-li -->
+				 
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LVC.php">
+							<span class="title">Libro Ventas</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/LVD.php">
+							<span class="title">Libro Ventas Detalle</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Contables/RepTilapia.php">
+							<span class="title">Reporte Tilapia</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-assessment"></i></div>
+					<span class="title">Reportes Financieros</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Financieros/BG.php">
+							<span class="title">Balance General</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Financieros/ERG.php">
+							<span class="title">Estado Resultados General</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Reportes_Financieros/LibroInventario.php">
+							<span class="title">Libro Inventario</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-assignment"></i></div>
+					<span class="title">Otros Reportes</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/CC.php">
+							<span class="title">Cierre de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/DECP.php">
+							<span class="title">Detalle de Existencias</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/EC.php">
+							<span class="title">Estado de Cuenta</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/CuentasPorCobrarFecha.php">
+							<span class="title">Cuentas Por Cobrar</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/FH.php">
+							<span class="title">Facturas Helados</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/FK.php">
+							<span class="title">Facturas Kiosko Restaurante</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/FK2.php">
+							<span class="title">Facturas Kiosko 2</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/FR.php">
+							<span class="title">Facturas Restaurante</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/FS.php">
+							<span class="title">Facturas Souvenirs</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/FT.php">
+							<span class="title">Facturas Taquilla</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/FM.php">
+							<span class="title">Facturas Mirador</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/LMD.php">
+							<span class="title">Libro Mayor Detalle</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/TR.php">
+							<span class="title">Mis Transacciones Rech.</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/TRG.php">
+							<span class="title">Transacciones Rech.</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/RR.php" target="_blank">
+							<span class="title">Reporte de Resoluciones</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/VP.php">
+							<span class="title">Venta de Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/NC.php">
+							<span class="title">Notas de Crédito</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/ND.php">
+							<span class="title">Notas de Débito</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/LOF.php">
+							<span class="title">Lista Ordenes</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/DesForm.php">
+							<span class="title">Descuentos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/ExistenciaProductos.php">
+							<span class="title">Listado de Productos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/Contabilidad/Conta_Chatun/Otros_Reportes/DetalleLibroInventario.php">
+							<span class="title">Detalle Inventario</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<!-- END POLIZAS -->
+		</ul><!--end .main-menu -->
+		<!-- END MAIN MENU -->
+	</div><!--end .menubar-scroll-panel-->
+</div><!--end #menubar-->
+		<!-- END MENUBAR -->

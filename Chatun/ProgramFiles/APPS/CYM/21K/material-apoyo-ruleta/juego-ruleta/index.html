@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de la ruleta</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body>
+  <div id="premio">
+    <table style="margin: 0 auto;">
+      <tr>
+        <th></th>
+      </tr>
+
+      <tr>
+        <td>
+          <p class="elije">ELIJE TU CORTESIA:</p>
+        </td>
+        <td><img src="image/cortesia.png" class="imgSorpresa"></td>
+
+      </tr>
+
+      <tr>
+        <td>
+          <p class="contador">TURNOS:10</p>
+        </td>
+      </tr>
+
+    </table>
+
+  </div>
+  <div class="vara"></div>
+  <div>
+    <img class="img-fluid" src="image/imagen.png" id="ruleta">
+  </div>
+  <div>
+    <div id="sonido" style="display: none;">
+      <iframe id="audio" src="sonido/ruleta.mp3">
+      </iframe>
+
+    </div>
+  </div>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>

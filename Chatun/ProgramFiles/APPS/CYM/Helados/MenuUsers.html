@@ -1,0 +1,243 @@
+<!-- BEGIN MENUBAR-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<div id="menubar" class="menubar-inverse animate">
+	<div class="menubar-scroll-panel">
+
+		<!-- BEGIN MAIN MENU -->
+		<ul id="main-menu" class="gui-controls">
+
+			<!-- BEGIN MANTENIMIENTO -->
+			<!-- BEGIN MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-sliders"></i></div>
+					<span class="title">Mantenimiento</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<!--<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/AF.php">
+							<span class="title">Anular Factura</span>
+						</a>
+					</li>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/IF.php">
+							<span class="title">Conteo Inventario Físico</span>
+						</a>
+					</li>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Descuentos</span>
+						</a>
+						
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/DAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/D.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Productos</span>
+						</a>
+						
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/PAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/P.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul> -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Recetas/Subrecetas</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/IngresarReceta.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/R.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Producción Subreceta</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/IngresarSubreceta.php">
+									<span class="title">Nueva Producción</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Mantenimiento/FechaProduccion.php" >
+									<span class="title">Listado de Producciones ingresadas</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-hdd-o"></i></div>
+					<span class="title">Caja</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Caja/Apertura.php">
+							<span class="title">Apertura de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Caja/Cierre.php">
+							<span class="title">Cierre de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Caja/RetirarDinero.php">
+							<span class="title">Retirar Efectivo</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Facturacion/VtaNew.php">
+					<div class="gui-icon"><i class="md md-receipt"></i></div>
+					<span class="title">Facturación</span>
+				</a>
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-list"></i></div>
+					<span class="title">Inventario</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Inventario/SelDespacho.php">
+							<span class="title">Ingreso Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Inventario/IF.php">
+							<span class="title">Inventario Físico</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Inventario/NA.php">
+							<span class="title">Nota de Abono</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Inventario/NC.php">
+							<span class="title">Nota de Cargo</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-list-alt"></i></div>
+					<span class="title">Reportes</span>
+				</a>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Reportes/ECP.php">
+							<span class="title">Existencia</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Reportes/KP.php">
+							<span class="title">Kardex de Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Reportes/KB.php">
+							<span class="title">Movimiento Bodega</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i><i style="margin: 10px; line-height: 40px; " class="bi bi-boxes"></i></i></div>
+					<span class="title">Envios</span>
+				</a>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Envios/NuevoPedido.php">
+							<span class="title">Solicitar Producto</span>
+						</a>
+					</li>
+				</ul>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Envios/PedidosPendientes.php">
+							<span class="title">Recibir Producto</span>
+						</a>
+					</li>
+				</ul>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Envios/SolicitudesPendientes.php">
+							<span class="title">Despachar Pedido</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-plus-circle"></i></div>
+					<span class="title">Requisición</span>
+				</a>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Requisicion/RP.php">
+							<span class="title">Requisición de Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-assignment"></i></div>
+					<span class="title">Otros Reportes</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Helados/Otros_Reportes/CC.php">
+							<span class="title">Cierre de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+		</ul><!--end .main-menu -->
+		<!-- END MAIN MENU -->
+	</div><!--end .menubar-scroll-panel-->
+</div><!--end #menubar-->
+		<!-- END MENUBAR -->

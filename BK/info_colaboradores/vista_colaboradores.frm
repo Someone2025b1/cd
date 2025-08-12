@@ -1,0 +1,15 @@
+TYPE=VIEW
+query=select `info_colaboradores`.`datos_generales`.`cif` AS `cif`,concat(`info_colaboradores`.`datos_generales`.`primer_nombre`,_latin1\' \',`info_colaboradores`.`datos_generales`.`segundo_nombre`,_latin1\' \',`info_colaboradores`.`datos_generales`.`tercer_nombre`,_latin1\' \',`info_colaboradores`.`datos_generales`.`primer_apellido`,_latin1\' \',`info_colaboradores`.`datos_generales`.`segundo_apellido`,_latin1\' \',`info_colaboradores`.`datos_generales`.`apellido_casada`) AS `Nombres` from `info_colaboradores`.`datos_generales`
+md5=46b4893a004c6aa8aa38b9960020a405
+updatable=1
+algorithm=0
+definer_user=root
+definer_host=localhost
+suid=1
+with_check_option=0
+timestamp=2015-12-30 09:23:45
+create-version=1
+source=select `datos_generales`.`cif` AS `cif`,concat(`datos_generales`.`primer_nombre`,_latin1\' \',`datos_generales`.`segundo_nombre`,_latin1\' \',`datos_generales`.`tercer_nombre`,_latin1\' \',`datos_generales`.`primer_apellido`,_latin1\' \',`datos_generales`.`segundo_apellido`,_latin1\' \',`datos_generales`.`apellido_casada`) AS `Nombres` from `datos_generales`
+client_cs_name=utf8mb4
+connection_cl_name=utf8mb4_general_ci
+view_body_utf8=select `info_colaboradores`.`datos_generales`.`cif` AS `cif`,concat(`info_colaboradores`.`datos_generales`.`primer_nombre`,\' \',`info_colaboradores`.`datos_generales`.`segundo_nombre`,\' \',`info_colaboradores`.`datos_generales`.`tercer_nombre`,\' \',`info_colaboradores`.`datos_generales`.`primer_apellido`,\' \',`info_colaboradores`.`datos_generales`.`segundo_apellido`,\' \',`info_colaboradores`.`datos_generales`.`apellido_casada`) AS `Nombres` from `info_colaboradores`.`datos_generales`

@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<!-- BEGIN MENUBAR-->
+<div id="menubar" class="menubar-inverse animate">
+	<div class="menubar-scroll-panel">
+
+		<!-- BEGIN MAIN MENU -->
+		<ul id="main-menu" class="gui-controls">
+
+			<!-- BEGIN MANTENIMIENTO -->
+
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-cog" aria-hidden="true"></i></div>
+					<span class="title">Mantenimiento</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RRHH/Mantenimiento/AgregarAspecto.php">
+							<span class="title">Agregar Aspecto a Evaluar</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RRHH/Mantenimiento/ConsultarAspecto.php">
+							<span class="title">Consultar Aspectos a Evaluar</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-users" aria-hidden="true"></i></div>
+					<span class="title">Colaboradores</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RRHH/Colaborador/AgregarColaborador.php">
+							<span class="title">Agregar Colaborador</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RRHH/Colaborador/ConsultarColaborador.php">
+							<span class="title">Consultar Colaborador</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
+					<span class="title">Evaluación de Desempeño</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RRHH/Colaborador/AgregarEvaluacion.php">
+							<span class="title">Nueva Evaluación</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RRHH/Colaborador/ConsultarEvalucion.php">
+							<span class="title">Consultar Mis Evaluaciones</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+		</ul><!--end .main-menu -->
+		<!-- END MAIN MENU -->
+	</div><!--end .menubar-scroll-panel-->
+</div><!--end #menubar-->
+		<!-- END MENUBAR -->

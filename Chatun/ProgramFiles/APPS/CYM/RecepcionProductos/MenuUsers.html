@@ -1,0 +1,209 @@
+<!-- BEGIN MENUBAR-->
+<div id="menubar" class="menubar-inverse animate">
+	<div class="menubar-scroll-panel">
+
+		<!-- BEGIN MAIN MENU -->
+		<ul id="main-menu" class="gui-controls">
+
+			<!-- BEGIN MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-sliders"></i></div>
+					<span class="title">Mantenimiento</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Productos</span>
+						</a>
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/IngresarProducto.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Mantenimiento/P.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Existencias</span>
+						</a>
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Mantenimiento/ExistenciasGeneral.php" >
+									<span class="title">General</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Mantenimiento/ExistenciasPorPuntodeVenta.php" >
+									<span class="title">Por Punto de Venta</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<!-- BEGIN MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-hdd-o"></i></div>
+					<span class="title">Ingreso de Facturas</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Factura/NewFac.php">
+							<span class="title">Igresar Nueva Factura</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Factura/Apertura.php">
+							<span class="title">Consultar Facturas Ingresadas</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Factura/NotaCargo.php">
+							<span class="title">Nota de Cargo</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Factura/NotaAbono.php">
+							<span class="title">Nota de Abono</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-hdd-o"></i></div>
+					<span class="title">Pedidos</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Pedidos/NuevoPedido.php">
+							<span class="title">Solicitar Pedido</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Pedidos/RCPInventario.php">
+							<span class="title">Pedidos Pendientes</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-hdd-o"></i></div>
+					<span class="title">Kardex de Producto</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Kardex/KardexGeneralP.php">
+							<span class="title">Kardex Por Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Kardex/KardexGeneralPuntoP.php">
+							<span class="title">Kardex Producto y Punto de Venta</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Kardex/KardexGeneral.php">
+							<span class="title">Todos los Movimientos de Productos</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Kardex/MovimientosPProducto.php">
+							<span class="title">Todos los Movimientos Por Punto de Ventas</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Kardex/KardexGeneralPTraslados.php">
+							<span class="title">Traslados Por Punto de Venta</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->	
+			
+			<!-- BEGIN MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i  class="fa fa-sort-numeric-asc" ></i></div>
+					<span class="title">Inventarios P. Pequeños</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Inventarios/ControldeInventario.php">
+							<span class="title">Nuevo Control</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Inventarios/ControldeInventarioFin.php">
+							<span class="title">Terminar Control</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Inventarios/ConsultarControles.php">
+							<span class="title">Consultar Controles</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Inventarios/ExistenciasPorPuntodeVenta.php">
+							<span class="title">Existencias</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Inventarios/ConsultarAjustes.php">
+							<span class="title">Terminar Ajuste PP</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/RecepcionProductos/Inventarios/ConsultarEnvios.php">
+							<span class="title">Envios</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+				
+			</li><!--end /menu-li -->
+		</ul><!--end .main-menu -->
+		<!-- END MAIN MENU -->
+	</div><!--end .menubar-scroll-panel-->
+</div><!--end #menubar-->
+		<!-- END MENUBAR -->

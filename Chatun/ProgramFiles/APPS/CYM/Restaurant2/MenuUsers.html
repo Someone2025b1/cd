@@ -1,0 +1,315 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<!-- BEGIN MENUBAR-->
+<div id="menubar" class="menubar-inverse animate">
+	<div class="menubar-scroll-panel">
+
+		<!-- BEGIN MAIN MENU -->
+		<ul id="main-menu" class="gui-controls">
+
+			<!-- BEGIN MANTENIMIENTO -->
+			<!-- BEGIN MANTENIMIENTO -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-sliders"></i></div>
+					<span class="title">Mantenimiento</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<!--<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/Anulacion_Factura.php">
+							<span class="title">Anular Factura</span>
+						</a>
+					</li>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Categoría Menú</span>
+						</a>
+						
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/CMAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/CM.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Descuentos</span>
+						</a>
+						
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/DAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/D.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Productos</span>
+						</a>
+						
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/PAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/P.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="gui-folder">
+						<a>
+							<span class="title">Recetas/Subrecetas</span>
+						</a>
+						
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/RAdd.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/R.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+						</ul>
+					</li> -->  
+
+					<li class="gui-folder">
+						<a>
+							<span class="title">Recetas Nuevas</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/IngresarReceta.php" >
+									<span class="title">Agregar</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/RNew.php" >
+									<span class="title">Consultar</span>
+								</a>
+							</li>
+							
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a>
+							<span class="title">Produccion de Sub Recetas</span>
+						</a>
+						<!--start submenu -->
+						<ul>
+							
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/IngresarSubreceta.php" >
+									<span class="title">Nueva Produccion</span>
+								</a>
+							</li>
+							<li>
+								<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Mantenimiento/FechaProduccion.php" >
+									<span class="title">Listado de Producciones ingresadas</span>
+								</a>
+							</li>
+						</ul><!--end /submenu -->
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-hdd-o"></i></div>
+					<span class="title">Caja</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Caja/Apertura.php">
+							<span class="title">Apertura de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Caja/Cierre.php">
+							<span class="title">Cierre de Caja</span>
+						</a>
+					</li><!--end /menu-li --> 
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Caja/RetirarDinero.php">
+							<span class="title">Retirar Efectivo</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Caja/CierreUsuario.php">
+							<span class="title">Facturación Usuario</span>
+						</a>
+					</li><!--end /menu-li --> 
+					<li>
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Facturacion/Vista_Ordenes.php" >
+							<span class="title">Vista Ordenes</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Facturacion/Vista_Ordenes_Despacho.php" >
+							<span class="title">Ordenes Despacho</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Facturacion/Vista_Pantalla_Ordenes_Listas.php" >
+							<span class="title">Pantalla Ordenes</span>
+						</a>
+					</li>
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Facturacion/VtaNew.php">
+					<div class="gui-icon"><i class="md md-receipt"></i></div>
+					<span class="title">Facturación</span>
+				</a>
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i><i style="margin: 10px; line-height: 40px; " class="bi bi-boxes"></i></i></div>
+					<span class="title">Envios</span>
+				</a>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Envios/NuevoPedido.php">
+							<span class="title">Solicitar Producto</span>
+						</a>
+					</li>
+				</ul>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Envios/PedidosPendientes.php">
+							<span class="title">Recibir Producto</span>
+						</a>
+					</li>
+				</ul>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Envios/SolicitudesPendientes.php">
+							<span class="title">Despachar Pedido</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-list"></i></div>
+					<span class="title">Inventario</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Inventario/SelDespacho.php">
+							<span class="title">Ingreso Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Inventario/IF.php">
+							<span class="title">Inventario Físico</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Inventario/NA.php">
+							<span class="title">Nota de Abono</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Inventario/NC.php">
+							<span class="title">Nota de Cargo</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-list-alt"></i></div>
+					<span class="title">Reportes</span>
+				</a>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Reportes/ECP.php">
+							<span class="title">Existencia</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Reportes/KP.php">
+							<span class="title">Kardex de Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Reportes/Min.php">
+							<span class="title">Mínimos</span>
+						</a>
+					</li><!--end /menu-li -->
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Reportes/KB.php">
+							<span class="title">Movimiento Bodega</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-plus-circle"></i></div>
+					<span class="title">Requisición</span>
+				</a>
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Requisicion/RP.php">
+							<span class="title">Requisición de Producto</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="md md-assignment"></i></div>
+					<span class="title">Otros Reportes</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Otros_Reportes/CC.php">
+							<span class="title">Cierre de Caja</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+			<li class="gui-folder">
+				<a>
+					<div class="gui-icon"><i class="fa fa-calendar"></i></div>
+					<span class="title">Eventos</span>
+				</a>
+				<!--start submenu -->
+				<ul>
+					<li class="gui-folder">
+						<a href="<?php $_SERVER['DOCUMENT_ROOT']?>/ProgramFiles/APPS/CYM/Restaurant2/Eventos/RequerimientoEvento.php">
+							<span class="title">Requerimientos de Eventos</span>
+						</a>
+					</li><!--end /menu-li -->
+				</ul><!--end /submenu -->
+			</li><!--end /menu-li -->
+		</ul><!--end .main-menu -->
+		<!-- END MAIN MENU -->
+	</div><!--end .menubar-scroll-panel-->
+</div><!--end #menubar-->
+		<!-- END MENUBAR -->

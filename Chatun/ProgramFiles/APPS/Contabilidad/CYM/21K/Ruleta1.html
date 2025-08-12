@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tómbola de Nombres</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #resultado {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tómbola de Nombres</h1>
+    <p>Presiona el botón para seleccionar un nombre al azar.</p>
+    <button onclick="seleccionarNombre()">Seleccionar Nombre</button>
+    <div id="resultado"></div>
+
+    <script>
+        // Lista de nombres definida en el código
+        const nombres = ["Ana", "Carlos", "María", "Juan", "Lucía", "Pedro", "Sofía", "Miguel"];
+
+        // Función para seleccionar un nombre al azar
+        function seleccionarNombre() {
+            // Seleccionar un índice aleatorio
+            const indiceAleatorio = Math.floor(Math.random() * nombres.length);
+            // Obtener el nombre correspondiente
+            const nombreSeleccionado = nombres[indiceAleatorio];
+            // Mostrar el nombre seleccionado
+            document.getElementById("resultado").innerText = `Nombre seleccionado: ${nombreSeleccionado}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<?php
+ob_start();
+session_start();
+include("../../../../../Script/conex.php");
+include("../../../../../libs/tcpdf/tcpdf.php");
+
+
+$Usuario = $_SESSION["iduser"];
+$FechaHora = date('d-m-Y H:i:s', strtotime('now'));
+$User = $_SESSION["login"];
+
+$Factura = $_GET["Codigo"];
+
+$sql = "SELECT * FROM Bodega.FACTURA_KS AS A LEFT JOIN Bodega.RESOLUCION AS B ON A.RES_NUMERO = B.RES_NUMERO WHERE A.F_CODIGO = '".$Factura."'";
+$result = mysqli_query($db, $sql);
+while($row = mysqli_fetch_array($result))
+{
+    $Serie  = $row["F_SERIE"];
+    $Numero  = $row["F_NUMERO"];
+    $NIT    = $row["CLI_NIT"];
+    $TipoPago    = $row["F_TIPO"];
+    if($TipoPago == 1)
+    {
+        $Pago = 'EFECTIVO';
+    }
+    elseif($TipoPago == 2)
+    {
+        $Pago = 'TARJETA CREDITO';
+    }
+    elseif($TipoPago == 3)
+    {
+        $Pago = 'CREDITO';
+    }
+    elseif($TipoPago == 4)
+    {
+        $Pago = 'DEPOSITO';
+    }
+    $TotalFactura  = $row["F_TOTAL"];
+    $PagoEfectivo = number_format($row["F_EFECTIVO"], 2, '.', ',');
+    $Cambio = number_format($row["F_CAMBIO"], 2, '.', ',');
+    $NumeroOrden = $row["F_ORDEN"];
+    $ResolucionNumero = $row["RES_NUMERO"];
+    $Descuento = $row["F_CON_DESCUENTO"];
+    $DTE = $row["F_DTE"];
+    $CAE = $row["F_CAE"];
+}
+
+
+$sqlCliente = "SELECT * FROM Bodega.CLIENTE WHERE CLI_NIT = '".$NIT."'";
+$resultCliente = mysqli_query($db, $sqlCliente);
+while($rowC = mysqli_fetch_array($resultCliente))
+{
+    $Nombre  = utf8_decode($rowC["CLI_NOMBRE"]);
+    $Direccion  = utf8_decode($rowC["CLI_DIRECCION"]);
+}
+
+$TablaProducto = <<<EOD
+<table cellspacing="2" cellpadding="1" border="0">
+EOD;
+
+$sqlD = "SELECT A.*, B.P_NOMBRE, B.P_PRECIO_VENTA
+FROM Bodega.MESA_ORDEN_CA AS A
+INNER JOIN Productos.PRODUCTO AS B ON A.RS_CODIGO = B.P_CODIGO
+WHERE A.M_CODIGO = ".$_GET["Mesa"]."
+AND A.MO_ESTADO = 1
+ORDER BY B.P_NOMBRE";
+$resultD = mysqli_query($db, $sqlD);
+while($rowD = mysqli_fetch_array($resultD))
+{
+    $Cantidad  = number_format($rowD["MO_CANTIDAD"], 0, '.', ',');
+    $NombreProd  = $rowD["P_NOMBRE"];
+    $TablaProducto .= <<<EOD
+    <tr>
+    <td align="left" style="font-size: 30px; width: 50px;">$Cantidad</td>
+    <td align="left" style="font-size: 30px; width: 500px">$NombreProd</td>
+    </tr>
+EOD;
+}
+
+
+$Upd = mysqli_query($db, "UPDATE Bodega.MESA_ORDEN_CA SET MO_IMPRESO = 2
+WHERE M_CODIGO = '".$_GET["Mesa"]."'");
+
+$TablaProducto .= <<<EOD
+</table>
+EOD;
+
+//****************** CUSTOMIZACION **************************
+//***********************************************************
+class MYPDF extends TCPDF {
+
+}
+//***********************************************************
+//***********************************************************
+$pdf = new MYPDF("P","pt", array(600, 3000), 'UTF-8', FALSE);
+// Add a page
+$pdf->AddPage();
+$pdf->SetMargins(-5,0,-10, true);
+$pdf->SetFont('helvetica', '', 35);
+$tbl1 = "MESA NÚMERO:   <b>".$_GET["Mesa"]."</b>";
+$pdf->writeHTML($tbl1,1,0,0,0,'C');
+$pdf->writeHTML($TablaProducto,0,0,0,0,'J'); 
+// force print dialog
+$js = 'print(true);';
+// set javascript
+$pdf->IncludeJS($js);
+//header('refresh:7; url=Vta.php');
+ob_clean();
+$pdf->Output();
+
+?>

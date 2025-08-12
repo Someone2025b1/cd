@@ -1,0 +1,21 @@
+@charset "utf-8";
+/* CSS Document */
+
+.guar {
+	text-align: right;
+}
+table {
+	color: #9F0;
+	text-align: center;
+	font-size: 11px;
+}
+.centrado {
+	text-align: center;
+}
+.centro {
+	text-align: center;
+}
+.letras {
+	font-size: 10px;
+	color: #000;
+}
