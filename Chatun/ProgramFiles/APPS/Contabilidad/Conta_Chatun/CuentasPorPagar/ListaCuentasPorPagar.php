@@ -27,6 +27,30 @@ if($Usuar==1801788){
 }else{
 	$Filtro="AND CC_REALIZO ="."$Usuar";
 }
+
+?>
+<?php
+
+$FechaHoy = date('d-m-Y H:i:s', strtotime('now'));
+$FechaFinal = date('Y-m-d', strtotime($FechaHoy."+1 day"));
+$QueryAnterior = "SELECT SUM( TRANSACCION_DETALLE.TRAD_CARGO_CONTA ) AS CARGOS, SUM( TRANSACCION_DETALLE.TRAD_ABONO_CONTA ) AS ABONOS
+                FROM Contabilidad.TRANSACCION_DETALLE, Contabilidad.TRANSACCION
+                WHERE TRANSACCION_DETALLE.TRA_CODIGO = TRANSACCION.TRA_CODIGO
+                AND TRANSACCION.TRA_FECHA_TRANS
+                BETWEEN  '2016/01/01'
+                AND  '".$FechaFinal."'
+                AND TRANSACCION_DETALLE.N_CODIGO =  '".$Nombre."'
+                AND TRANSACCION.E_CODIGO = 2 AND TRANSACCION.TRA_ESTADO = 1";
+                if($Nombre == '1.01.02.001' || $Nombre == '1.01.02.002' || $Nombre == '1.01.02.003' || $Nombre == '1.01.02.004' || $Nombre == '1.01.02.007' || $Nombre == '1.01.02.008' || $Nombre == '1.01.02.005' || $Nombre == '1.01.02.006')
+{
+    $pdf->ezText("Libro de Banco | $Codigo",16,array('justification'=>'center'));
+    $pdf->ezText("$Nombre",16,array('justification'=>'center'));
+}
+else
+{
+    $pdf->ezText("Estado de Cuenta - ".$Nombre." - ".$Codigo,16,array('justification'=>'center'));
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
