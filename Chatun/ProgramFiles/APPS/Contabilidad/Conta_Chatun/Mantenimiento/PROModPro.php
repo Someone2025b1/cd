@@ -58,7 +58,7 @@ include("../../../../../Script/conex.php");
 				<h1 class="text-center"><strong>Edición de Proveedor</strong><br></h1>
 				<br>
 				<?php
-					$sql = mysqli_query($db, "UPDATE Contabilidad.PROVEEDOR SET P_NOMBRE = '".$Nombre."', P_DIRECCION = '".$Direccion."', P_TELEFONO = '".$Telefono1."', P_TELEFONO1 = '".$Telefono2."', P_EMAIL = '".$Email."', REG_CODIGO = '".$Regimen."', P_NIT = '".$NIT."', P_DPI = '".$DPI."', P_CODIGO_CUENTA = '".$CuentaBancaria."', P_NOMBRE_CUENTA = '".$NombreCuentaBancaria."', B_CODIGO = '".$Banco."', TF_CODIGO = '".$TipoFactura."', P_DIAS_CREDITO = ".$DiasCredito." WHERE P_CODIGO = '".$Codigo."'");
+					$sql = mysqli_query($db, "UPDATE Contabilidad.PROVEEDOR SET P_NOMBRE = '".$Nombre."', P_DIRECCION = '".$Direccion."', P_TELEFONO = '".$Telefono1."', P_TELEFONO1 = '".$Telefono2."', P_EMAIL = '".$Email."', REG_CODIGO = '".$Regimen."', P_NIT = '".$NIT."', P_DPI = '".$DPI."', P_CODIGO_CUENTA = '".$CuentaBancaria."', P_NOMBRE_CUENTA = '".$NombreCuentaBancaria."', B_CODIGO = '".$Banco."', TF_CODIGO = '".$TipoFactura."', P_DIAS_CREDITO = ".$DiasCredito.", P_TIPO = ".$TipoProveedor." WHERE P_CODIGO = '".$Codigo."'");
 									
 					if(!$sql) //Si el query tuvo algún problema que despligue error y que la ejecución del código se detenga
 					{

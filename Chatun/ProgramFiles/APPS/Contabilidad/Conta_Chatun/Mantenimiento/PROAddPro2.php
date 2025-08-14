@@ -50,7 +50,6 @@ include("../../../../../Script/conex.php");
 					$Banco                = $_POST["Banco"];
 					$TipoFactura          = $_POST["TipoFactura"];
 					$DiasCredito          = $_POST["DiasCredito"];
-
 					if($TipoProveedor == 1)
 					{
 						$query = "SELECT MAX(CONVERT(SUBSTRING_INDEX(A.P_CODIGO, '.', -1), UNSIGNED INTEGER)) AS CODIGO_NUEVO
@@ -85,8 +84,8 @@ include("../../../../../Script/conex.php");
 							$CodigoNuevo = '2.01.01.001.'.$CorrelativoNuevo;							
 						}
 
-						$sql = mysqli_query($db, "INSERT INTO Contabilidad.PROVEEDOR (P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, P_DIAS_CREDITO, B_CODIGO, TF_CODIGO)
-											VALUES ('".$CodigoNuevo."', '".$Direccion."', '".$Email."', '".$NIT."', '".$DPI."', '".$Nombre."', ".$Telefono1.", ".$Telefono2.", ".$Regimen.", '".$CuentaBancaria."', '".$NombreCuentaBancaria."',  ".$DiasCredito.",  ".$Banco.", '".$TipoFactura."')");
+						$sql = mysqli_query($db, "INSERT INTO Contabilidad.PROVEEDOR (P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, P_DIAS_CREDITO, B_CODIGO, TF_CODIGO, P_TIPO)
+											VALUES ('".$CodigoNuevo."', '".$Direccion."', '".$Email."', '".$NIT."', '".$DPI."', '".$Nombre."', ".$Telefono1.", ".$Telefono2.", ".$Regimen.", '".$CuentaBancaria."', '".$NombreCuentaBancaria."',  ".$DiasCredito.",  ".$Banco.", '".$TipoFactura."', ".$TipoProveedor.")");
 						
 						if(!$sql)
 						{
@@ -96,7 +95,8 @@ include("../../../../../Script/conex.php");
 									<h4 class="text-light">Código de transacción: '.$CodigoNuevo.'</h4>
 								</div>';
 							echo mysqli_error($sql);
-							
+							    echo 'Error MySQL: ' . mysqli_error($db);
+
 						}
 						else
 						{
@@ -158,8 +158,8 @@ include("../../../../../Script/conex.php");
 							$CodigoNuevo = $Xplotado[0].'.'.$Xplotado[1].'.'.$Xplotado[2].'.'.$Xplotado[3].'.'.$CorrelativoNuevo;							
 						}
 
-						$sql = mysqli_query($db, "INSERT INTO Contabilidad.PROVEEDOR (P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, P_DIAS_CREDITO, B_CODIGO, TF_CODIGO)
-											VALUES ('".$CodigoNuevo."', '".$Direccion."', '".$Email."', '".$NIT."', '".$DPI."', '".$Nombre."', ".$Telefono1.", ".$Telefono2.", ".$Regimen.", '".$CuentaBancaria."', '".$NombreCuentaBancaria."',  ".$DiasCredito.",  ".$Banco.", '".$TipoFactura."')");
+						$sql = mysqli_query($db, "INSERT INTO Contabilidad.PROVEEDOR (P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, P_DIAS_CREDITO, B_CODIGO, TF_CODIGO, P_TIPO)
+											VALUES ('".$CodigoNuevo."', '".$Direccion."', '".$Email."', '".$NIT."', '".$DPI."', '".$Nombre."', ".$Telefono1.", ".$Telefono2.", ".$Regimen.", '".$CuentaBancaria."', '".$NombreCuentaBancaria."',  ".$DiasCredito.",  ".$Banco.", '".$TipoFactura."',  '".$TipoProveedor."')");
 						
 						if(!$sql)
 						{

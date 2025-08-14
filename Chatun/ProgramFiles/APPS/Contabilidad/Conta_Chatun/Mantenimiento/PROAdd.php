@@ -25,7 +25,39 @@ $id_depto = $_SESSION["id_departamento"];
 	<link type="text/css" rel="stylesheet" href="../../../../../libs/alertify/css/alertify.core.css"/>
 	<link type="text/css" rel="stylesheet" href="../../../../../libs/alertify/css/alertify.bootstrap.css"/>
 	<!-- END STYLESHEETS -->
-	
+	 <style>
+        body {
+            background-color: #f5f6fa;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .card-head {
+            background-color: #8BC34A !important; /* Verde principal */
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            color: white;
+            padding: 15px;
+        }
+        label {
+            font-weight: 500;
+        }
+        .btn-success {
+            border-radius: 6px;
+        }
+        .btn-primary {
+            border-radius: 6px;
+            padding: 10px 30px;
+            font-size: 16px;
+        }
+        textarea {
+            resize: none;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
 	<script>
 	function AbrirProveedores()
 		{
@@ -89,7 +121,7 @@ $id_depto = $_SESSION["id_departamento"];
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-lg-6">
+									<div class="col-lg-6 justify-content-center">
 										<div class="form-group floating-label">
 											<input class="form-control" type="text" name="Nombre" id="Nombre" required/>
 											<label for="Nombre">Nombre</label>
@@ -139,6 +171,12 @@ $id_depto = $_SESSION["id_departamento"];
 											<label for="Email">Correo Electrónico</label>
 										</div>
 									</div>
+									<div class="col-lg-4 col-lg-8">
+										<div class="form-group floating-label">
+											<input class="form-control" type="number" name="DiasCredito" id="DiasCredito" value="<?php echo $DiasCredito; ?>" />
+											<label for="DiasCredito">Días de Crédito</label>
+										</div>
+									</div>
 								</div>
 								<div class="row" >
 									<div class="col-lg-4 col-lg-8">
@@ -147,6 +185,18 @@ $id_depto = $_SESSION["id_departamento"];
 											<label for="CuentaBancaria">No. Cuenta Bancaria</label>
 										</div>
 									</div>
+									
+									<div class="col-lg-4 col-lg-8">
+										<div class="form-group">
+											<select name="TipoProveedor" id="TipoProveedor" class="form-control" required>
+												<option value="" disabled selected>Seleccione una opción</option>
+												<option value="1">Proveedor Local</option>
+												<option value="2">Proveedor del Exterior</option>
+											</select>
+											<label for="TipoProveedor">Tipo de Proveedor</label>
+										</div>
+									</div>
+								
 								</div>
 								<div class="row" >
 									<div class="col-lg-4 col-lg-8">
@@ -155,8 +205,7 @@ $id_depto = $_SESSION["id_departamento"];
 											<label for="NombreCuentaBancaria">Nombre de Cuenta Bancaria</label>
 										</div>
 									</div>
-								</div>
-								<div class="row">
+									
 									<div class="col-lg-4 col-lg-8">
 										<div class="form-group">
 											<select name="Banco" id="Banco" class="form-control">
@@ -175,7 +224,9 @@ $id_depto = $_SESSION["id_departamento"];
 											<label for="Banco">Banco</label>
 										</div>
 									</div>
+								
 								</div>
+								
 								<div class="row">
 									<div class="col-lg-4 col-lg-8">
 										<div class="form-group">
@@ -195,8 +246,6 @@ $id_depto = $_SESSION["id_departamento"];
 											<label for="Regimen">Tipo de Régimen</label>
 										</div>
 									</div>
-								</div>
-								<div class="row">
 									<div class="col-lg-4 col-lg-8">
 										<div class="form-group">
 											<select name="TipoFactura" id="TipoFactura" class="form-control" required>
@@ -216,18 +265,8 @@ $id_depto = $_SESSION["id_departamento"];
 										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-lg-4 col-lg-8">
-										<div class="form-group">
-											<select name="TipoProveedor" id="TipoProveedor" class="form-control" required>
-												<option value="" disabled selected>Seleccione una opción</option>
-												<option value="1">Proveedor Local</option>
-												<option value="2">Proveedor del Exterior</option>
-											</select>
-											<label for="TipoProveedor">Tipo de Proveedor</label>
-										</div>
-									</div>
-								</div>
+								
+								
 							</div>
 						</div>
 					</div>

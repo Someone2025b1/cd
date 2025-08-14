@@ -36,25 +36,41 @@ include("../../../../../Script/conex.php");
 				<h1 class="text-center"><strong>Mantenimiento de Proveedores</strong><br></h1>
 				<br>
 				<?php
-					$Nombre               = $_POST["Nombre"];
-					$NIT                  = $_POST["NIT"];
-					$DPI                  = $_POST["DPI"];
-					$Direccion            = $_POST["Direccion"];
-					$Telefono1            = $_POST["Telefono1"];
-					$Telefono2            = $_POST["Telefono2"];
-					$Email                = $_POST["Email"];
-					$Regimen              = $_POST["Regimen"];
-					$TipoProveedor        = $_POST["TipoProveedor"];
-					$CuentaBancaria       = $_POST["CuentaBancaria"];
-					$NombreCuentaBancaria = $_POST["NombreCuentaBancaria"];
-					$Banco                = $_POST["Banco"];
-					$TipoFactura          = $_POST["TipoFactura"];
+					// --- Recoger POST de forma segura, evitando warnings si no vienen
+					$Nombre               = isset($_POST["Nombre"]) ? $_POST["Nombre"] : '';
+					$NIT                  = isset($_POST["NIT"]) ? $_POST["NIT"] : '';
+					$DPI                  = isset($_POST["DPI"]) ? $_POST["DPI"] : '';
+					$Direccion            = isset($_POST["Direccion"]) ? $_POST["Direccion"] : '';
+					$Telefono1            = isset($_POST["Telefono1"]) ? $_POST["Telefono1"] : '';
+					$Telefono2            = isset($_POST["Telefono2"]) ? $_POST["Telefono2"] : '';
+					$Email                = isset($_POST["Email"]) ? $_POST["Email"] : '';
+					$Regimen              = isset($_POST["Regimen"]) ? $_POST["Regimen"] : '';
+					$TipoProveedor        = isset($_POST["TipoProveedor"]) ? $_POST["TipoProveedor"] : '';
+					$CuentaBancaria       = isset($_POST["CuentaBancaria"]) ? $_POST["CuentaBancaria"] : '';
+					$NombreCuentaBancaria = isset($_POST["NombreCuentaBancaria"]) ? $_POST["NombreCuentaBancaria"] : '';
+					$Banco                = isset($_POST["Banco"]) ? $_POST["Banco"] : '';
+					$TipoFactura          = isset($_POST["TipoFactura"]) ? $_POST["TipoFactura"] : '';
+					$DiasCredito          = isset($_POST["DiasCredito"]) ? $_POST["DiasCredito"] : '';
 
+					// Helper: escapar string y preparar ints/NULL
+					function qstr($db, $val) {
+						return "'" . mysqli_real_escape_string($db, $val) . "'";
+					}
+					function qint_or_null($val) {
+						// si viene vacío o no es numérico -> NULL
+						if ($val === '' || $val === null) return 'NULL';
+						// permitir números en formato string
+						if (is_numeric($val)) return intval($val);
+						return 'NULL';
+					}
+
+					// Generación de CodigoNuevo (mantengo tu lógica)
 					if($TipoProveedor == 1)
 					{
 						$query = "SELECT MAX(CONVERT(SUBSTRING_INDEX(A.P_CODIGO, '.', -1), UNSIGNED INTEGER)) AS CODIGO_NUEVO
 									FROM Contabilidad.PROVEEDOR AS A";
 						$result = mysqli_query($db, $query);
+						$CodigoNuevo = null;
 						while($row = mysqli_fetch_array($result))
 						{
 							$CodigoNuevo =  $row["CODIGO_NUEVO"];
@@ -84,9 +100,30 @@ include("../../../../../Script/conex.php");
 							$CodigoNuevo = '2.01.01.001.'.$CorrelativoNuevo;							
 						}
 
-						$sql = mysqli_query($db, "INSERT INTO Contabilidad.PROVEEDOR (P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, B_CODIGO, TF_CODIGO)
-											VALUES ('".$CodigoNuevo."', '".$Direccion."', '".$Email."', '".$NIT."', '".$DPI."', '".$Nombre."', ".$Telefono1.", ".$Telefono2.", ".$Regimen.", '".$CuentaBancaria."', '".$NombreCuentaBancaria."',  ".$Banco.", '".$TipoFactura."')");
-						
+						// PREPARAR valores para query: escapamos strings y tratamos ints/NULL
+						$CodigoNuevo_q = qstr($db, $CodigoNuevo);
+						$Direccion_q = qstr($db, $Direccion);
+						$Email_q = qstr($db, $Email);
+						$NIT_q = qstr($db, $NIT);
+						$DPI_q = qstr($db, $DPI);
+						$Nombre_q = qstr($db, $Nombre);
+						// P_TELEFONO y P_TELEFONO1 en tu captura son VARCHAR, tratamos como string o NULL
+						$Telefono1_q = ($Telefono1 !== '' && $Telefono1 !== null) ? qstr($db, $Telefono1) : 'NULL';
+						$Telefono2_q = ($Telefono2 !== '' && $Telefono2 !== null) ? qstr($db, $Telefono2) : 'NULL';
+						$Regimen_q = qint_or_null($Regimen);
+						$CuentaBancaria_q = ($CuentaBancaria !== '' && $CuentaBancaria !== null) ? qstr($db, $CuentaBancaria) : 'NULL';
+						$NombreCuentaBancaria_q = ($NombreCuentaBancaria !== '' && $NombreCuentaBancaria !== null) ? qstr($db, $NombreCuentaBancaria) : 'NULL';
+						$DiasCredito_q = qint_or_null($DiasCredito);
+						$Banco_q = qint_or_null($Banco);
+						$TipoFactura_q = ($TipoFactura !== '' && $TipoFactura !== null) ? qstr($db, $TipoFactura) : 'NULL';
+						$TipoProveedor_q = qint_or_null($TipoProveedor);
+
+						$insert_query = "INSERT INTO Contabilidad.PROVEEDOR
+							(P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, P_DIAS_CREDITO, B_CODIGO, TF_CODIGO, P_TIPO)
+							VALUES ($CodigoNuevo_q, $Direccion_q, $Email_q, $NIT_q, $DPI_q, $Nombre_q, $Telefono1_q, $Telefono2_q, $Regimen_q, $CuentaBancaria_q, $NombreCuentaBancaria_q, $DiasCredito_q, $Banco_q, $TipoFactura_q, $TipoProveedor_q)";
+
+						$sql = mysqli_query($db, $insert_query);
+
 						if(!$sql)
 						{
 							echo '<div class="col-lg-12 text-center">
@@ -94,13 +131,16 @@ include("../../../../../Script/conex.php");
 									<h2 class="text-light">Lo sentimos, no se pudo ingresar el proveedor.</h2>
 									<h4 class="text-light">Código de transacción: '.$CodigoNuevo.'</h4>
 								</div>';
-							echo mysqli_error($sql);
-							
+							// Mostrar error real y la query para depuración
+							echo 'Error MySQL: ' . mysqli_error($db);
+							echo '<pre>'.$insert_query.'</pre>';
+							exit;
 						}
 						else
 						{
-							$sql1 = mysqli_query($db, "INSERT INTO Contabilidad.NOMENCLATURA (N_CODIGO, N_NOMBRE, N_TIPO)
-												VALUES ('".$CodigoNuevo."', '".$Nombre."', '')");
+							$sql1_query = "INSERT INTO Contabilidad.NOMENCLATURA (N_CODIGO, N_NOMBRE, N_TIPO)
+												VALUES (".qstr($db,$CodigoNuevo).", ".qstr($db,$Nombre).", '')";
+							$sql1 = mysqli_query($db, $sql1_query);
 
 							if(!$sql1)
 							{
@@ -109,8 +149,9 @@ include("../../../../../Script/conex.php");
 										<h2 class="text-light">Lo sentimos, no se pudo ingresar el proveedor.</h2>
 										<h4 class="text-light">Código de transacción: '.$CodigoNuevo.'</h4>
 									</div>';
-								echo mysqli_error($sql1);
-								
+								echo 'Error MySQL: ' . mysqli_error($db);
+								echo '<pre>'.$sql1_query.'</pre>';
+								exit;
 							}
 							else
 							{
@@ -125,8 +166,10 @@ include("../../../../../Script/conex.php");
 					}
 					else
 					{
+						// Rama para proveedor exterior (mantengo tu lógica)
 						$query = "SELECT MAX(N_CODIGO) AS CODIGO_NUEVO FROM Contabilidad.NOMENCLATURA WHERE N_CODIGO BETWEEN '2.01.01.002' AND '2.01.01.002.9999'";
 						$result = mysqli_query($db, $query);
+						$CodigoNuevo = null;
 						while($row = mysqli_fetch_array($result))
 						{
 							$CodigoNuevo =  $row["CODIGO_NUEVO"];
@@ -139,7 +182,7 @@ include("../../../../../Script/conex.php");
 						else
 						{
 							$Xplotado = explode(".", $CodigoNuevo);
-							$CorrelativoActual = $Xplotado[4];
+							$CorrelativoActual = isset($Xplotado[4]) ? intval($Xplotado[4]) : 0;
 							$CorrelativoActual = $CorrelativoActual + 2;
 							if($CorrelativoActual < 10)
 							{
@@ -157,9 +200,29 @@ include("../../../../../Script/conex.php");
 							$CodigoNuevo = $Xplotado[0].'.'.$Xplotado[1].'.'.$Xplotado[2].'.'.$Xplotado[3].'.'.$CorrelativoNuevo;							
 						}
 
-						$sql = mysqli_query($db, "INSERT INTO Contabilidad.PROVEEDOR (P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, B_CODIGO, TF_CODIGO)
-											VALUES ('".$CodigoNuevo."', '".$Direccion."', '".$Email."', '".$NIT."', '".$DPI."', '".$Nombre."', ".$Telefono1.", ".$Telefono2.", ".$Regimen.", '".$CuentaBancaria."', '".$NombreCuentaBancaria."',  ".$Banco.", '".$TipoFactura."')");
-						
+						// Preparamos variables igual que en la otra rama
+						$CodigoNuevo_q = qstr($db, $CodigoNuevo);
+						$Direccion_q = qstr($db, $Direccion);
+						$Email_q = qstr($db, $Email);
+						$NIT_q = qstr($db, $NIT);
+						$DPI_q = qstr($db, $DPI);
+						$Nombre_q = qstr($db, $Nombre);
+						$Telefono1_q = ($Telefono1 !== '' && $Telefono1 !== null) ? qstr($db, $Telefono1) : 'NULL';
+						$Telefono2_q = ($Telefono2 !== '' && $Telefono2 !== null) ? qstr($db, $Telefono2) : 'NULL';
+						$Regimen_q = qint_or_null($Regimen);
+						$CuentaBancaria_q = ($CuentaBancaria !== '' && $CuentaBancaria !== null) ? qstr($db, $CuentaBancaria) : 'NULL';
+						$NombreCuentaBancaria_q = ($NombreCuentaBancaria !== '' && $NombreCuentaBancaria !== null) ? qstr($db, $NombreCuentaBancaria) : 'NULL';
+						$DiasCredito_q = qint_or_null($DiasCredito);
+						$Banco_q = qint_or_null($Banco);
+						$TipoFactura_q = ($TipoFactura !== '' && $TipoFactura !== null) ? qstr($db, $TipoFactura) : 'NULL';
+						$TipoProveedor_q = qint_or_null($TipoProveedor);
+
+						$insert_query = "INSERT INTO Contabilidad.PROVEEDOR
+							(P_CODIGO, P_DIRECCION, P_EMAIL, P_NIT, P_DPI, P_NOMBRE, P_TELEFONO, P_TELEFONO1, REG_CODIGO, P_CODIGO_CUENTA, P_NOMBRE_CUENTA, P_DIAS_CREDITO, B_CODIGO, TF_CODIGO, P_TIPO)
+							VALUES ($CodigoNuevo_q, $Direccion_q, $Email_q, $NIT_q, $DPI_q, $Nombre_q, $Telefono1_q, $Telefono2_q, $Regimen_q, $CuentaBancaria_q, $NombreCuentaBancaria_q, $DiasCredito_q, $Banco_q, $TipoFactura_q, $TipoProveedor_q)";
+
+						$sql = mysqli_query($db, $insert_query);
+
 						if(!$sql)
 						{
 							echo '<div class="col-lg-12 text-center">
@@ -167,13 +230,15 @@ include("../../../../../Script/conex.php");
 									<h2 class="text-light">Lo sentimos, no se pudo ingresar el proveedor.</h2>
 									<h4 class="text-light">Código de transacción: '.$CodigoNuevo.'</h4>
 								</div>';
-							echo mysqli_error($sql);
-							
+							echo 'Error MySQL: ' . mysqli_error($db);
+							echo '<pre>'.$insert_query.'</pre>';
+							exit;
 						}
 						else
 						{
-							$sql1 = mysqli_query($db, "INSERT INTO Contabilidad.NOMENCLATURA (N_CODIGO, N_NOMBRE, N_TIPO)
-												VALUES ('".$CodigoNuevo."', '".$Nombre."', '')");
+							$sql1_query = "INSERT INTO Contabilidad.NOMENCLATURA (N_CODIGO, N_NOMBRE, N_TIPO)
+												VALUES (".qstr($db,$CodigoNuevo).", ".qstr($db,$Nombre).", '')";
+							$sql1 = mysqli_query($db, $sql1_query);
 
 							if(!$sql1)
 							{
@@ -182,8 +247,9 @@ include("../../../../../Script/conex.php");
 										<h2 class="text-light">Lo sentimos, no se pudo ingresar el proveedor.</h2>
 										<h4 class="text-light">Código de transacción: '.$CodigoNuevo.'</h4>
 									</div>';
-								echo mysqli_error($sql1);
-								
+								echo 'Error MySQL: ' . mysqli_error($db);
+								echo '<pre>'.$sql1_query.'</pre>';
+								exit;
 							}
 							else
 							{
