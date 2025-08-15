@@ -1,197 +1,309 @@
 <?php
-// error_reporting(error_reporting() & ~E_NOTICE);
-// 	$db = mysqli_connect("10.60.58.214", "root","chatun2021");
-// 	if (!$db) {
-//   	echo "Error con la base de datos, favor de comunicarse al departamento de IDT para verificar...";
-//  	 exit;
-// 	}
-// 	$db1 = mysqli_connect("10.60.58.214", "root","chatun2021");
-// //defino tipo de caracteres a manejar.
-// 	mysqli_set_charset($db, 'utf8');
-// //defino variables globales de las tablas
-// 	$base_asociados = 'info_asociados';
-// 	$base_general = 'info_base';
-// 	$base_bbdd = 'info_bbdd';
-	// $base_colaboradores = 'info_colaboradores';
-?>
+// ListaCuentasPorPagar.php
+// Versión SIN crear tablas (NO CREATE TEMPORARY TABLE)
+// Lista todos los proveedores con deuda, paginada y con TableFilterJS
 
-<?php
+ob_start();
+session_start();
 include("../../../../../Script/seguridad.php");
-include("../../../../../Script/conex.php");
+include("../../../../../Script/conex.php");    // debe proveer $db (mysqli)
 include("../../../../../Script/funciones.php");
-$Usuar = $_SESSION["iduser"];
-// 1801788
-// $Usuar==53711 | $Usuar==22045 | $Usuar==435849
-if($Usuar==1801788){
-	$Filtro="";
-}else{
-	$Filtro="AND CC_REALIZO ="."$Usuar";
+
+// Seleccionar la base de datos explícitamente en caso de "No database selected"
+$dbName = 'Contabilidad';
+if (!mysqli_select_db($db, $dbName)) {
+    die("Error seleccionando la base de datos '$dbName': " . mysqli_error($db));
 }
 
-?>
-<?php
+// Parámetros (GET o POST)
+$FechaIni = $_REQUEST['FechaInicio'] ?? date('Y-m-01');
+$FechaFin = $_REQUEST['FechaFin']  ?? date('Y-m-d');
+$page     = max(1, (int)($_REQUEST['page'] ?? 1));
+$perPage  = max(10, (int)($_REQUEST['perPage'] ?? 50));
+$offset   = ($page - 1) * $perPage;
 
-$FechaHoy = date('d-m-Y H:i:s', strtotime('now'));
-$FechaFinal = date('Y-m-d', strtotime($FechaHoy."+1 day"));
-$QueryAnterior = "SELECT SUM( TRANSACCION_DETALLE.TRAD_CARGO_CONTA ) AS CARGOS, SUM( TRANSACCION_DETALLE.TRAD_ABONO_CONTA ) AS ABONOS
-                FROM Contabilidad.TRANSACCION_DETALLE, Contabilidad.TRANSACCION
-                WHERE TRANSACCION_DETALLE.TRA_CODIGO = TRANSACCION.TRA_CODIGO
-                AND TRANSACCION.TRA_FECHA_TRANS
-                BETWEEN  '2016/01/01'
-                AND  '".$FechaFinal."'
-                AND TRANSACCION_DETALLE.N_CODIGO =  '".$Nombre."'
-                AND TRANSACCION.E_CODIGO = 2 AND TRANSACCION.TRA_ESTADO = 1";
-                if($Nombre == '1.01.02.001' || $Nombre == '1.01.02.002' || $Nombre == '1.01.02.003' || $Nombre == '1.01.02.004' || $Nombre == '1.01.02.007' || $Nombre == '1.01.02.008' || $Nombre == '1.01.02.005' || $Nombre == '1.01.02.006')
-{
-    $pdf->ezText("Libro de Banco | $Codigo",16,array('justification'=>'center'));
-    $pdf->ezText("$Nombre",16,array('justification'=>'center'));
-}
-else
-{
-    $pdf->ezText("Estado de Cuenta - ".$Nombre." - ".$Codigo,16,array('justification'=>'center'));
+// Normalizar fechas a YYYY-MM-DD
+$FechaIni = date('Y-m-d', strtotime($FechaIni));
+$FechaFin = date('Y-m-d', strtotime($FechaFin));
 
+// -----------------------------------------
+// 1) Contar total de proveedores con deuda
+// (no temp table, join directo TRANSACCION_DETALLE -> TRANSACCION)
+// -----------------------------------------
+$countSql = "
+SELECT COUNT(*) AS cnt FROM (
+  SELECT td.N_CODIGO
+  FROM Contabilidad.TRANSACCION_DETALLE td
+  JOIN Contabilidad.TRANSACCION t ON td.TRA_CODIGO = t.TRA_CODIGO
+  WHERE t.E_CODIGO = 2
+    AND t.TRA_ESTADO = 1
+  GROUP BY td.N_CODIGO
+  HAVING (SUM(td.TRAD_CARGO_CONTA) - SUM(td.TRAD_ABONO_CONTA)) <> 0
+) AS tcount
+";
+$resCount = mysqli_query($db, $countSql);
+if ($resCount === false) {
+    $totalRows = 0;
+} else {
+    $totalRows = (int) mysqli_fetch_assoc($resCount)['cnt'];
 }
+$totalPages = max(1, (int)ceil($totalRows / $perPage));
+
+// -----------------------------------------
+// 2) Consulta principal (agregada y paginada)
+// -----------------------------------------
+$mainSql = "
+SELECT
+  td.N_CODIGO AS codigo,
+  td.TRAD_RAZON AS nombre,
+  MAX(t.TRA_FECHA_TRANS) AS last_date,
+  SUM(CASE WHEN t.TRA_FECHA_TRANS BETWEEN ? AND ? THEN td.TRAD_CARGO_CONTA ELSE 0 END) AS period_cargos,
+  SUM(CASE WHEN t.TRA_FECHA_TRANS BETWEEN ? AND ? THEN td.TRAD_ABONO_CONTA ELSE 0 END) AS period_abonos,
+  SUM(CASE WHEN t.TRA_FECHA_TRANS < ? THEN td.TRAD_CARGO_CONTA ELSE 0 END) AS prev_cargos,
+  SUM(CASE WHEN t.TRA_FECHA_TRANS < ? THEN td.TRAD_ABONO_CONTA ELSE 0 END) AS prev_abonos,
+  SUM(td.TRAD_CARGO_CONTA) - SUM(td.TRAD_ABONO_CONTA) AS total_deuda,
+  COUNT(DISTINCT CASE WHEN t.TRA_FECHA_TRANS BETWEEN ? AND ? THEN t.TRA_CODIGO ELSE NULL END) AS num_facturas
+FROM Contabilidad.TRANSACCION_DETALLE td
+JOIN Contabilidad.TRANSACCION t ON td.TRA_CODIGO = t.TRA_CODIGO
+WHERE t.E_CODIGO = 2
+  AND t.TRA_ESTADO = 1
+GROUP BY td.N_CODIGO, td.TRAD_RAZON
+HAVING total_deuda <> 0
+ORDER BY total_deuda DESC
+LIMIT ? OFFSET ?
+";
+
+$stmt = mysqli_prepare($db, $mainSql);
+if (!$stmt) {
+    die("Error preparando consulta principal: " . mysqli_error($db));
+}
+
+// Bind parameters:
+// fi,ff,fi,ff,prevCut,prevCut,fi,ff, limit, offset
+$fi = $FechaIni;
+$ff = $FechaFin;
+$prevCut = $FechaIni;
+mysqli_stmt_bind_param($stmt, 'ssssssssii',
+    $fi, $ff,   // period cargos
+    $fi, $ff,   // period abonos
+    $prevCut, $prevCut, // prev cutoff
+    $fi, $ff,   // num_facturas count
+    $perPage, $offset
+);
+mysqli_stmt_execute($stmt);
+
+// Obtener resultados (compatibilidad)
+$rows = [];
+if (function_exists('mysqli_stmt_get_result')) {
+    $res = mysqli_stmt_get_result($stmt);
+    if ($res) $rows = mysqli_fetch_all($res, MYSQLI_ASSOC);
+} else {
+    // Fallback a bind_result + fetch
+    mysqli_stmt_bind_result(
+        $stmt,
+        $codigo, $nombre, $last_date,
+        $period_cargos, $period_abonos,
+        $prev_cargos, $prev_abonos,
+        $total_deuda, $num_facturas
+    );
+    while (mysqli_stmt_fetch($stmt)) {
+        $rows[] = [
+            'codigo' => $codigo,
+            'nombre' => $nombre,
+            'last_date' => $last_date,
+            'period_cargos' => $period_cargos,
+            'period_abonos' => $period_abonos,
+            'prev_cargos' => $prev_cargos,
+            'prev_abonos' => $prev_abonos,
+            'total_deuda' => $total_deuda,
+            'num_facturas' => $num_facturas
+        ];
+    }
+}
+mysqli_stmt_close($stmt);
+
+// -----------------------------------------
+// 3) Render HTML + TableFilterJS
+// -----------------------------------------
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-	<title>Portal Institucional Chatún</title>
+  <meta charset="utf-8">
+  <title>Lista de Cuentas por Pagar - Todos (Sin crear tablas)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- BEGIN META -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="keywords" content="your,keywords">
-	<!-- END META -->
-	
-    <script src="../../../../../libs/TableFilter/tablefilter_all_min.js"></script>
+  <!-- TableFilter script -->
+  <script src="../../../../../libs/TableFilter/tablefilter_all_min.js"></script>
 
-	<!-- BEGIN STYLESHEETS -->
-	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/bootstrap.css" />
-	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/materialadmin.css" />
-	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/font-awesome.min.css" />
-	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/material-design-iconic-font.min.css" />
-	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/libs/bootstrap-datepicker/datepicker3.css" />
-	<link rel="stylesheet" type="text/css" href="../../../../../libs/TableFilter/filtergrid.css">
-	<!-- END STYLESHEETS -->
-
+  <!-- STYLES -->
+  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/bootstrap.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/materialadmin.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/font-awesome.min.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/material-design-iconic-font.min.css" />
+  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/libs/bootstrap-datepicker/datepicker3.css" />
+  <link rel="stylesheet" type="text/css" href="../../../../../libs/TableFilter/filtergrid.css">
+  <style>
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .table-condensed td, .table-condensed th { padding: .35rem; }
+  </style>
 </head>
 <body class="menubar-hoverable header-fixed menubar-pin ">
+<?php include("../../../../MenuTop.php"); ?>
 
-	<?php include("../../../../MenuTop.php") ?>
+<div class="container" style="margin-top:20px">
+  <h3 class="text-center">Lista de Cuentas por Pagar (Todos los Proveedores)</h3>
+  <p class="text-muted text-center">
+    Período: <?php echo htmlspecialchars(date('d-m-Y', strtotime($FechaIni))) . ' al ' . htmlspecialchars(date('d-m-Y', strtotime($FechaFin))); ?>
+    &nbsp; | &nbsp; Registros: <?php echo number_format($totalRows); ?>
+  </p>
 
-	<!-- BEGIN BASE-->
-	 <div id="base">
-    <div id="content">
-        <div class="container">
-            <h1 class="text-center"><strong>Consulta de Cuentas Por Pagar</strong><br></h1>
-            <br>
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-head style-primary">
-                        <h4 class="text-center"><strong>Deuda por Proveedor</strong></h4>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-hover table-condensed" id="tbl_proveedores">
-                            <thead>
-                                <th><strong>No.</strong></th>
-                                <th><strong>Fecha</strong></th>
-                                <th><strong>Código Proveedor</strong></th>
-                                <th><strong>Nombre Proveedor</strong></th>
-                                <th><strong>Total Deuda</strong></th>
-                                <th><strong>Facturas Pendientes</strong></th>
-                                <th><strong>Pagar / Abonar</strong></th>
-                            </thead>
-                            <tbody>
-                            <?php
-                            $contador = 1;
-                            // Consulta adaptada a tu estructura de tablas
-                            $consulta = "SELECT
-                                            P_CODIGO,
-                                            P_NOMBRE,
-                                            p_DIRECCION,
-                                            p_TELEFONO,
-                                            p_TELEFONO1,
-                                            p_EMAIL,
-                                            REG_CODIGO,
-                                            P_NIT,
-                                            P_DPI,
-                                            P_CODIGO_CUENTA,
-                                            P_NOMBRE_CUENTA,
-                                            P_DIAS_CREDITO,
-                                            B_CODIGO,
-                                            TF_CODIGO,
-                                            P_TIPO 
-                                        FROM
-                                            Contabilidad.PROVEEDOR";
-                            
-                            
-// Consulta adaptada a tu estructura de tablas
-                            // $consulta = "SELECT
-                            //                 P.P_CODIGO,
-                            //                 P.P_NOMBRE,
-                            //                 COUNT(CP.CP_CODIGO) AS FacturasPendientes,
-                            //                 SUM(CP.CP_TOTAL - CP.CP_ABONO) AS TotalDeuda
-                            //             FROM
-                            //                 Contabilidad.CUENTAS_POR_PAGAR AS CP
-                            //             JOIN
-                            //                 Contabilidad.PROVEEDOR AS P ON CP.N_CODIGO = P.P_CODIGO
-                            //             WHERE
-                            //                 CP.CP_ESTADO = 1 -- 1=Pendiente
-                            //             GROUP BY
-                            //                 P.P_CODIGO, P.P_NOMBRE
-                            //             HAVING
-                            //                 TotalDeuda > 0
-                            //             ORDER BY
-                            //                 P.P_NOMBRE ASC";
-                            $FechaHoy = date('d-m-Y H:i:s', strtotime('now'));
-                            $resultado = mysqli_query($db, $consulta);
-                            while($row = mysqli_fetch_array($resultado)) {
-                                $codigoProveedor = $row["P_CODIGO"];
-                                echo '<tr>';
-                                echo '<td>'.$contador.'</td>';
-                                echo '<td>'.$FechaHoy.'</td>';
-                                echo '<td>'.$row["P_CODIGO"].'</td>';
-                                echo '<td>'.$row["P_NOMBRE"].'</td>';
-                                echo '<td>' . number_format($row["P_DIAS_CREDITO"], 2) . '</td>';
-                                echo '<td>' . number_format($row["P_DPI"], 2) . '</td>';
-                                echo '<td>' . number_format($row["P_CODIGO_CUENTA"], 2) . '</td>';
-                               
-                                echo '<td><a href="PagarProveedor.php?codigo='.$codigoProveedor.'" class="btn btn-primary">Pagar</a></td>';
-                              
+  <div class="panel panel-default">
+    <div class="panel-body table-responsive">
+      <table class="table table-hover table-condensed" id="tbl_resultados">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Proveedor (Código)</th>
+            <th>Nombre</th>
+            <th>Últ. emisión</th>
+            <th class="text-right">Cargos (período)</th>
+            <th class="text-right">Abonos (período)</th>
+            <th class="text-right">Saldo Anterior</th>
+            <th class="text-right">Deuda Actual</th>
+            <th class="text-center">Facturas</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php
+        if (empty($rows)) {
+            echo '<tr><td colspan="10" class="text-center">No se encontraron proveedores con deuda en el periodo.</td></tr>';
+        } else {
+            $i = $offset + 1;
+            foreach ($rows as $r) {
+                $prev_cargos = (float)($r['prev_cargos'] ?? 0);
+                $prev_abonos = (float)($r['prev_abonos'] ?? 0);
+                $saldo_anterior_val = (isset($r['codigo'][0]) && $r['codigo'][0] == '1')
+                    ? ($prev_cargos - $prev_abonos)
+                    : ($prev_abonos - $prev_cargos);
 
-                                echo '</tr>';
-                                $contador++;
-                            }
-                            ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                echo '<tr>';
+                echo '<td>' . $i . '</td>';
+                echo '<td>' . htmlspecialchars($r['codigo']) . '</td>';
+                echo '<td>' . htmlspecialchars($r['nombre']) . '</td>';
+                echo '<td>' . ($r['last_date'] ? htmlspecialchars(date('d-m-Y', strtotime($r['last_date']))) : '---') . '</td>';
+                echo '<td class="text-right">Q. ' . number_format((float)$r['period_cargos'], 2) . '</td>';
+                echo '<td class="text-right">Q. ' . number_format((float)$r['period_abonos'], 2) . '</td>';
+                echo '<td class="text-right">Q. ' . number_format($saldo_anterior_val, 2) . '</td>';
+                echo '<td class="text-right">Q. ' . number_format((float)$r['total_deuda'], 2) . '</td>';
+                echo '<td class="text-center">' . (int)$r['num_facturas'] . '</td>';
+                echo '<td>';
+                echo '<a class="btn btn-xs btn-info" href="DetalleProveedor.php?codigo=' . urlencode($r['codigo']) . '">Detalles</a> ';
+                echo '<a class="btn btn-xs btn-primary" href="PagarProveedor.php?codigo=' . urlencode($r['codigo']) . '">Pagar</a>';
+                echo '</td>';
+                echo '</tr>';
+                $i++;
+            }
+        }
+        ?>
+        </tbody>
+      </table>
+
+      <!-- Paginación -->
+      <?php if ($totalRows > 0) { ?>
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <?php
+    $qsBase = "FechaInicio=" . urlencode($FechaIni) . "&FechaFin=" . urlencode($FechaFin) . "&perPage=" . (int)$perPage;
+    $prev = max(1, $page - 1);
+    $next = min($totalPages, $page + 1);
+    ?>
+    <li class="<?php echo ($page == 1) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=1" aria-label="Primera"><span>&laquo;</span></a></li>
+    <li class="<?php echo ($page == 1) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=<?php echo $prev; ?>" aria-label="Anterior"><span>&lsaquo;</span></a></li>
+
+    <?php
+    $start = max(1, $page - 3);
+    $end = min($totalPages, $page + 3);
+    for ($p = $start; $p <= $end; $p++) {
+        echo '<li' . (($p == $page) ? ' class="active"' : '') . '><a href="?' . $qsBase . '&page=' . $p . '">' . $p . '</a></li>';
+    }
+    ?>
+
+    <li class="<?php echo ($page == $totalPages) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=<?php echo $next; ?>" aria-label="Siguiente"><span>&rsaquo;</span></a></li>
+    <li class="<?php echo ($page == $totalPages) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=<?php echo $totalPages; ?>" aria-label="Última"><span>&raquo;</span></a></li>
+  </ul>
+</nav>
+<?php } ?>
+
     </div>
-    <?php include("../MenuUsers2.html"); ?>
+  </div>
 </div>
-	<!--end #base-->
-		<!-- END BASE -->
 
-		<!-- BEGIN JAVASCRIPT -->
-		<script src="../../../../../js/libs/jquery/jquery-1.11.2.min.js"></script>
-		<script src="../../../../../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
-		<script src="../../../../../js/libs/bootstrap/bootstrap.min.js"></script>
-		<script src="../../../../../js/libs/spin.js/spin.min.js"></script>
-		<script src="../../../../../js/libs/autosize/jquery.autosize.min.js"></script>
-		<script src="../../../../../js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
-		<script src="../../../../../js/core/source/App.js"></script>
-		<script src="../../../../../js/core/source/AppNavigation.js"></script>
-		<script src="../../../../../js/core/source/AppOffcanvas.js"></script>
-		<script src="../../../../../js/core/source/AppCard.js"></script>
-		<script src="../../../../../js/core/source/AppForm.js"></script>
-		<script src="../../../../../js/core/source/AppNavSearch.js"></script>
-		<script src="../../../../../js/core/source/AppVendor.js"></script>
-		<script src="../../../../../js/core/demo/Demo.js"></script>
-		<script src="../../../../../js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
-		<!-- END JAVASCRIPT -->
+<?php include("../MenuUsers.html"); ?>
 
-	</body>
-	</html>
+<!-- CORE SCRIPTS -->
+<script src="../../../../../js/libs/jquery/jquery-1.11.2.min.js"></script>
+<script src="../../../../../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
+<script src="../../../../../js/libs/bootstrap/bootstrap.min.js"></script>
+<script src="../../../../../js/libs/spin.js/spin.min.js"></script>
+<script src="../../../../../js/libs/autosize/jquery.autosize.min.js"></script>
+<script src="../../../../../js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
+<script src="../../../../../js/core/source/App.js"></script>
+<script src="../../../../../js/core/source/AppNavigation.js"></script>
+<script src="../../../../../js/core/source/AppOffcanvas.js"></script>
+<script src="../../../../../js/core/source/AppCard.js"></script>
+<script src="../../../../../js/core/source/AppForm.js"></script>
+<script src="../../../../../js/core/source/AppNavSearch.js"></script>
+<script src="../../../../../js/core/source/AppVendor.js"></script>
+<script src="../../../../../js/core/demo/Demo.js"></script>
+<script src="../../../../../js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+
+<!-- Inicializar TableFilter con tu configuración -->
+<script>
+window.addEventListener('load', function(){
+  try {
+    var tbl_filtrado =  { 
+        mark_active_columns: true,
+        highlight_keywords: true,
+        filters_row_index:1,
+        paging: true,
+        paging_length: 15,  
+        rows_counter: true,
+        rows_counter_text: "Registros: ", 
+        page_text: "Página:",
+        of_text: "de",
+        btn_reset: true, 
+        loader: true, 
+        loader_html: "<img src='../../../../../libs/TableFilter/img_loading.gif' alt='' style='vertical-align:middle; margin-right:5px;'><span>Filtrando datos...</span>",  
+        display_all_text: "-Todos-",
+        results_per_page: ["# Filas por Página...",[10,20,50,100]],  
+        btn_reset: true,
+        col_2: "disable",
+        col_3: "disable",
+        alternate_rows: true,
+        col_4: 'number',
+        col_5: 'number',
+        col_6: 'number',
+        col_7: 'number'
+    };
+
+    if (typeof setFilterGrid === 'function') {
+      setFilterGrid('tbl_resultados', tbl_filtrado);
+    } else if (typeof TableFilter !== 'undefined') {
+      var TFconfig = Object.assign({}, tbl_filtrado);
+      TFconfig.base_path = TFconfig.base_path || '../../../../../libs/TableFilter/';
+      var tf = new TableFilter('tbl_resultados', TFconfig);
+      tf.init();
+    } else {
+      console.warn('TableFilter no disponible en este entorno.');
+    }
+  } catch(e) {
+    console.warn('TableFilter no inicializado:', e);
+  }
+});
+</script>
+
+</body>
+</html>
