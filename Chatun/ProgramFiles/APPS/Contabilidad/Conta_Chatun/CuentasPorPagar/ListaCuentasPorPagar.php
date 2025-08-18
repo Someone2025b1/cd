@@ -1,309 +1,270 @@
 <?php
-// ListaCuentasPorPagar.php
-// Versión SIN crear tablas (NO CREATE TEMPORARY TABLE)
-// Lista todos los proveedores con deuda, paginada y con TableFilterJS
-
-ob_start();
-session_start();
 include("../../../../../Script/seguridad.php");
-include("../../../../../Script/conex.php");    // debe proveer $db (mysqli)
+include("../../../../../Script/conex.php");
 include("../../../../../Script/funciones.php");
-
-// Seleccionar la base de datos explícitamente en caso de "No database selected"
-$dbName = 'Contabilidad';
-if (!mysqli_select_db($db, $dbName)) {
-    die("Error seleccionando la base de datos '$dbName': " . mysqli_error($db));
-}
-
-// Parámetros (GET o POST)
-$FechaIni = $_REQUEST['FechaInicio'] ?? date('Y-m-01');
-$FechaFin = $_REQUEST['FechaFin']  ?? date('Y-m-d');
-$page     = max(1, (int)($_REQUEST['page'] ?? 1));
-$perPage  = max(10, (int)($_REQUEST['perPage'] ?? 50));
-$offset   = ($page - 1) * $perPage;
-
-// Normalizar fechas a YYYY-MM-DD
-$FechaIni = date('Y-m-d', strtotime($FechaIni));
-$FechaFin = date('Y-m-d', strtotime($FechaFin));
-
-// -----------------------------------------
-// 1) Contar total de proveedores con deuda
-// (no temp table, join directo TRANSACCION_DETALLE -> TRANSACCION)
-// -----------------------------------------
-$countSql = "
-SELECT COUNT(*) AS cnt FROM (
-  SELECT td.N_CODIGO
-  FROM Contabilidad.TRANSACCION_DETALLE td
-  JOIN Contabilidad.TRANSACCION t ON td.TRA_CODIGO = t.TRA_CODIGO
-  WHERE t.E_CODIGO = 2
-    AND t.TRA_ESTADO = 1
-  GROUP BY td.N_CODIGO
-  HAVING (SUM(td.TRAD_CARGO_CONTA) - SUM(td.TRAD_ABONO_CONTA)) <> 0
-) AS tcount
-";
-$resCount = mysqli_query($db, $countSql);
-if ($resCount === false) {
-    $totalRows = 0;
-} else {
-    $totalRows = (int) mysqli_fetch_assoc($resCount)['cnt'];
-}
-$totalPages = max(1, (int)ceil($totalRows / $perPage));
-
-// -----------------------------------------
-// 2) Consulta principal (agregada y paginada)
-// -----------------------------------------
-$mainSql = "
-SELECT
-  td.N_CODIGO AS codigo,
-  td.TRAD_RAZON AS nombre,
-  MAX(t.TRA_FECHA_TRANS) AS last_date,
-  SUM(CASE WHEN t.TRA_FECHA_TRANS BETWEEN ? AND ? THEN td.TRAD_CARGO_CONTA ELSE 0 END) AS period_cargos,
-  SUM(CASE WHEN t.TRA_FECHA_TRANS BETWEEN ? AND ? THEN td.TRAD_ABONO_CONTA ELSE 0 END) AS period_abonos,
-  SUM(CASE WHEN t.TRA_FECHA_TRANS < ? THEN td.TRAD_CARGO_CONTA ELSE 0 END) AS prev_cargos,
-  SUM(CASE WHEN t.TRA_FECHA_TRANS < ? THEN td.TRAD_ABONO_CONTA ELSE 0 END) AS prev_abonos,
-  SUM(td.TRAD_CARGO_CONTA) - SUM(td.TRAD_ABONO_CONTA) AS total_deuda,
-  COUNT(DISTINCT CASE WHEN t.TRA_FECHA_TRANS BETWEEN ? AND ? THEN t.TRA_CODIGO ELSE NULL END) AS num_facturas
-FROM Contabilidad.TRANSACCION_DETALLE td
-JOIN Contabilidad.TRANSACCION t ON td.TRA_CODIGO = t.TRA_CODIGO
-WHERE t.E_CODIGO = 2
-  AND t.TRA_ESTADO = 1
-GROUP BY td.N_CODIGO, td.TRAD_RAZON
-HAVING total_deuda <> 0
-ORDER BY total_deuda DESC
-LIMIT ? OFFSET ?
-";
-
-$stmt = mysqli_prepare($db, $mainSql);
-if (!$stmt) {
-    die("Error preparando consulta principal: " . mysqli_error($db));
-}
-
-// Bind parameters:
-// fi,ff,fi,ff,prevCut,prevCut,fi,ff, limit, offset
-$fi = $FechaIni;
-$ff = $FechaFin;
-$prevCut = $FechaIni;
-mysqli_stmt_bind_param($stmt, 'ssssssssii',
-    $fi, $ff,   // period cargos
-    $fi, $ff,   // period abonos
-    $prevCut, $prevCut, // prev cutoff
-    $fi, $ff,   // num_facturas count
-    $perPage, $offset
-);
-mysqli_stmt_execute($stmt);
-
-// Obtener resultados (compatibilidad)
-$rows = [];
-if (function_exists('mysqli_stmt_get_result')) {
-    $res = mysqli_stmt_get_result($stmt);
-    if ($res) $rows = mysqli_fetch_all($res, MYSQLI_ASSOC);
-} else {
-    // Fallback a bind_result + fetch
-    mysqli_stmt_bind_result(
-        $stmt,
-        $codigo, $nombre, $last_date,
-        $period_cargos, $period_abonos,
-        $prev_cargos, $prev_abonos,
-        $total_deuda, $num_facturas
-    );
-    while (mysqli_stmt_fetch($stmt)) {
-        $rows[] = [
-            'codigo' => $codigo,
-            'nombre' => $nombre,
-            'last_date' => $last_date,
-            'period_cargos' => $period_cargos,
-            'period_abonos' => $period_abonos,
-            'prev_cargos' => $prev_cargos,
-            'prev_abonos' => $prev_abonos,
-            'total_deuda' => $total_deuda,
-            'num_facturas' => $num_facturas
-        ];
-    }
-}
-mysqli_stmt_close($stmt);
-
-// -----------------------------------------
-// 3) Render HTML + TableFilterJS
-// -----------------------------------------
+$id_user = $_SESSION["iduser"];
 ?>
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <title>Lista de Cuentas por Pagar - Todos (Sin crear tablas)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portal Institucional Chatún</title>
 
-  <!-- TableFilter script -->
-  <script src="../../../../../libs/TableFilter/tablefilter_all_min.js"></script>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- STYLESHEETS -->
+    <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/materialadmin.css" />
+    <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/font-awesome.min.css" />
+    <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/material-design-iconic-font.min.css" />
+    <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/libs/bootstrap-datepicker/datepicker3.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../libs/TableFilter/filtergrid.css">
 
-  <!-- STYLES -->
-  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/bootstrap.css" />
-  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/materialadmin.css" />
-  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/font-awesome.min.css" />
-  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/material-design-iconic-font.min.css" />
-  <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/libs/bootstrap-datepicker/datepicker3.css" />
-  <link rel="stylesheet" type="text/css" href="../../../../../libs/TableFilter/filtergrid.css">
-  <style>
-    .text-right { text-align: right; }
-    .text-center { text-align: center; }
-    .table-condensed td, .table-condensed th { padding: .35rem; }
-  </style>
-</head>
-<body class="menubar-hoverable header-fixed menubar-pin ">
-<?php include("../../../../MenuTop.php"); ?>
+    <!-- Layout fixes + responsive tweaks -->
+    <style>
+        :root {
+            /* Si tu menubar tiene otro ancho, ajusta aquí */
+            --menubar-default-width: 260px;
+        }
 
-<div class="container" style="margin-top:20px">
-  <h3 class="text-center">Lista de Cuentas por Pagar (Todos los Proveedores)</h3>
-  <p class="text-muted text-center">
-    Período: <?php echo htmlspecialchars(date('d-m-Y', strtotime($FechaIni))) . ' al ' . htmlspecialchars(date('d-m-Y', strtotime($FechaFin))); ?>
-    &nbsp; | &nbsp; Registros: <?php echo number_format($totalRows); ?>
-  </p>
+        /* Asegura que el header esté siempre por encima */
+        header,
+        .header,
+        .topbar,
+        #header,
+        .navbar {
+            position: fixed;
+            /* si ya lo es, no lo rompe */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1060;
+            /* > menubar */
+        }
 
-  <div class="panel panel-default">
-    <div class="panel-body table-responsive">
-      <table class="table table-hover table-condensed" id="tbl_resultados">
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Proveedor (Código)</th>
-            <th>Nombre</th>
-            <th>Últ. emisión</th>
-            <th class="text-right">Cargos (período)</th>
-            <th class="text-right">Abonos (período)</th>
-            <th class="text-right">Saldo Anterior</th>
-            <th class="text-right">Deuda Actual</th>
-            <th class="text-center">Facturas</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-        <?php
-        if (empty($rows)) {
-            echo '<tr><td colspan="10" class="text-center">No se encontraron proveedores con deuda en el periodo.</td></tr>';
-        } else {
-            $i = $offset + 1;
-            foreach ($rows as $r) {
-                $prev_cargos = (float)($r['prev_cargos'] ?? 0);
-                $prev_abonos = (float)($r['prev_abonos'] ?? 0);
-                $saldo_anterior_val = (isset($r['codigo'][0]) && $r['codigo'][0] == '1')
-                    ? ($prev_cargos - $prev_abonos)
-                    : ($prev_abonos - $prev_cargos);
+        /* Menubar: estilos base (se ajusta por JS) */
+        #menubar {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            z-index: 1050;
+            overflow-y: auto;
+        }
 
-                echo '<tr>';
-                echo '<td>' . $i . '</td>';
-                echo '<td>' . htmlspecialchars($r['codigo']) . '</td>';
-                echo '<td>' . htmlspecialchars($r['nombre']) . '</td>';
-                echo '<td>' . ($r['last_date'] ? htmlspecialchars(date('d-m-Y', strtotime($r['last_date']))) : '---') . '</td>';
-                echo '<td class="text-right">Q. ' . number_format((float)$r['period_cargos'], 2) . '</td>';
-                echo '<td class="text-right">Q. ' . number_format((float)$r['period_abonos'], 2) . '</td>';
-                echo '<td class="text-right">Q. ' . number_format($saldo_anterior_val, 2) . '</td>';
-                echo '<td class="text-right">Q. ' . number_format((float)$r['total_deuda'], 2) . '</td>';
-                echo '<td class="text-center">' . (int)$r['num_facturas'] . '</td>';
-                echo '<td>';
-                echo '<a class="btn btn-xs btn-info" href="DetalleProveedor.php?codigo=' . urlencode($r['codigo']) . '">Detalles</a> ';
-                echo '<a class="btn btn-xs btn-primary" href="PagarProveedor.php?codigo=' . urlencode($r['codigo']) . '">Pagar</a>';
-                echo '</td>';
-                echo '</tr>';
-                $i++;
+        /* main-wrapper será empujado por JS (padding-top y margin-left) */
+        #main-wrapper {
+            transition: margin-left .18s ease, padding-top .18s ease;
+        }
+
+
+        /* Espaciado del buscador en móviles */
+        .search-row {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Ajustes esteticos y responsive cards */
+        .app-card {
+            padding: 8px;
+        }
+
+        .app-card .card {
+            min-height: 180px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .app-card .card .card-body {
+            position: relative;
+            padding: 1rem;
+        }
+
+        .btn-circle {
+            border-radius: 50%;
+            padding: 6px 8px;
+        }
+
+        /* responsive: en pantallas pequeñas el menubar offcanvas del tema debería venir por encima.
+   si tu tema ya lo maneja, esto no interfiere. */
+        @media (max-width: 991px) {
+            #menubar {
+                left: -100%;
+            }
+
+            /* offcanvas; el JS/resto del tema controla esto */
+            #main-wrapper {
+                margin-left: 0 !important;
+                padding-top: 60px;
             }
         }
-        ?>
-        </tbody>
-      </table>
+    </style>
+</head>
 
-      <!-- Paginación -->
-      <?php if ($totalRows > 0) { ?>
-<nav aria-label="Page navigation">
-  <ul class="pagination">
-    <?php
-    $qsBase = "FechaInicio=" . urlencode($FechaIni) . "&FechaFin=" . urlencode($FechaFin) . "&perPage=" . (int)$perPage;
-    $prev = max(1, $page - 1);
-    $next = min($totalPages, $page + 1);
-    ?>
-    <li class="<?php echo ($page == 1) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=1" aria-label="Primera"><span>&laquo;</span></a></li>
-    <li class="<?php echo ($page == 1) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=<?php echo $prev; ?>" aria-label="Anterior"><span>&lsaquo;</span></a></li>
+<body class="menubar-hoverable header-fixed menubar-pin">
 
-    <?php
-    $start = max(1, $page - 3);
-    $end = min($totalPages, $page + 3);
-    for ($p = $start; $p <= $end; $p++) {
-        echo '<li' . (($p == $page) ? ' class="active"' : '') . '><a href="?' . $qsBase . '&page=' . $p . '">' . $p . '</a></li>';
-    }
-    ?>
+    <section id="wrapper" class="login-register login-sidebar">
 
-    <li class="<?php echo ($page == $totalPages) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=<?php echo $next; ?>" aria-label="Siguiente"><span>&rsaquo;</span></a></li>
-    <li class="<?php echo ($page == $totalPages) ? 'disabled' : ''; ?>"><a href="?<?php echo $qsBase; ?>&page=<?php echo $totalPages; ?>" aria-label="Última"><span>&raquo;</span></a></li>
-  </ul>
-</nav>
-<?php } ?>
+        <?php include("../../../../MenuTop.php") ?>
 
-    </div>
-  </div>
-</div>
+        <div id="main-wrapper">
+            <div class="container-fluid">
+                <div class="row search-row">
+                    <div class="col-xs-12 text-right">
+                        <input type="text" class="form-control" id="search" style="width:240px;display:inline-block;" placeholder="Buscar un aplicativo..">
+                    </div>
+                </div>
 
-<?php include("../MenuUsers.html"); ?>
+                <!-- Grid responsivo de apps -->
+                <div class="row" id="mytable">
+                    <?php
+                    $Sql_Aplicativos = mysqli_query($db, "SELECT a.nombre, a.icono, a.link, a.id_aplicacion FROM info_bbdd.aplicaciones_agg a 
+                    INNER JOIN info_bbdd.permisos_app b ON b.id_aplicacion = a.id_aplicacion 
+                    WHERE b.id_user = $id_user AND b.estado = 1");
+                    while ($Fila_Aplicativos = mysqli_fetch_array($Sql_Aplicativos)) {
+                        $Icono = "../../../../APPS/IDT/Imagenes/Aplicaciones/" . $Fila_Aplicativos['icono'];
+                        $Link  = "../../../../APPS/" . $Fila_Aplicativos['link'];
+                    ?>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 app-card">
+                            <a href="<?php echo $Link ?>">
+                                <div class="card h-100">
+                                    <div class="text-center p-3">
+                                        <img src="<?php echo $Icono ?>" height="80" width="80" alt="icono">
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <button type="button"
+                                            class="btn-sm btn <?php echo isset($ClaseFavorito) ? $ClaseFavorito : '' ?> btn-circle pull-right"
+                                            onclick="MarcarFavorito(this)"
+                                            value="<?php echo htmlspecialchars($Fila_Aplicativos['nombre'], ENT_QUOTES) ?>">
+                                            <i class="fa fa-star"></i>
+                                        </button>
+                                        <h4 class="font-normal"><?php echo $Fila_Aplicativos['nombre'] ?></h4>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
 
-<!-- CORE SCRIPTS -->
-<script src="../../../../../js/libs/jquery/jquery-1.11.2.min.js"></script>
-<script src="../../../../../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
-<script src="../../../../../js/libs/bootstrap/bootstrap.min.js"></script>
-<script src="../../../../../js/libs/spin.js/spin.min.js"></script>
-<script src="../../../../../js/libs/autosize/jquery.autosize.min.js"></script>
-<script src="../../../../../js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
-<script src="../../../../../js/core/source/App.js"></script>
-<script src="../../../../../js/core/source/AppNavigation.js"></script>
-<script src="../../../../../js/core/source/AppOffcanvas.js"></script>
-<script src="../../../../../js/core/source/AppCard.js"></script>
-<script src="../../../../../js/core/source/AppForm.js"></script>
-<script src="../../../../../js/core/source/AppNavSearch.js"></script>
-<script src="../../../../../js/core/source/AppVendor.js"></script>
-<script src="../../../../../js/core/demo/Demo.js"></script>
-<script src="../../../../../js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+            <?php include("../MenuUsers.html"); ?>
+        </div>
 
-<!-- Inicializar TableFilter con tu configuración -->
-<script>
-window.addEventListener('load', function(){
-  try {
-    var tbl_filtrado =  { 
-        mark_active_columns: true,
-        highlight_keywords: true,
-        filters_row_index:1,
-        paging: true,
-        paging_length: 15,  
-        rows_counter: true,
-        rows_counter_text: "Registros: ", 
-        page_text: "Página:",
-        of_text: "de",
-        btn_reset: true, 
-        loader: true, 
-        loader_html: "<img src='../../../../../libs/TableFilter/img_loading.gif' alt='' style='vertical-align:middle; margin-right:5px;'><span>Filtrando datos...</span>",  
-        display_all_text: "-Todos-",
-        results_per_page: ["# Filas por Página...",[10,20,50,100]],  
-        btn_reset: true,
-        col_2: "disable",
-        col_3: "disable",
-        alternate_rows: true,
-        col_4: 'number',
-        col_5: 'number',
-        col_6: 'number',
-        col_7: 'number'
-    };
+        <!-- SCRIPTS -->
+        <script src="../../../../../js/libs/jquery/jquery-1.11.2.min.js"></script>
+        <script src="../../../../../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
+        <script src="../../../../../js/libs/bootstrap/bootstrap.min.js"></script>
+        <script src="../../../../../js/libs/spin.js/spin.min.js"></script>
+        <script src="../../../../../js/libs/autosize/jquery.autosize.min.js"></script>
+        <script src="../../../../../js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
+        <script src="../../../../../js/core/source/App.js"></script>
+        <script src="../../../../../js/core/source/AppNavigation.js"></script>
+        <script src="../../../../../js/core/source/AppOffcanvas.js"></script>
+        <script src="../../../../../js/core/source/AppCard.js"></script>
+        <script src="../../../../../js/core/source/AppForm.js"></script>
+        <script src="../../../../../js/core/source/AppNavSearch.js"></script>
+        <script src="../../../../../js/core/source/AppVendor.js"></script>
+        <script src="../../../../../js/core/demo/Demo.js"></script>
+        <script src="../../../../../js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
-    if (typeof setFilterGrid === 'function') {
-      setFilterGrid('tbl_resultados', tbl_filtrado);
-    } else if (typeof TableFilter !== 'undefined') {
-      var TFconfig = Object.assign({}, tbl_filtrado);
-      TFconfig.base_path = TFconfig.base_path || '../../../../../libs/TableFilter/';
-      var tf = new TableFilter('tbl_resultados', TFconfig);
-      tf.init();
-    } else {
-      console.warn('TableFilter no disponible en este entorno.');
-    }
-  } catch(e) {
-    console.warn('TableFilter no inicializado:', e);
-  }
-});
-</script>
+        <!-- JS para ajustar layout dinámicamente y búsqueda -->
+        <script>
+            (function() {
+                var main = document.getElementById('main-wrapper');
+                var menubar = document.getElementById('menubar');
+                // Intentamos detectar el header/top bar (varias opciones por si cambia el markup)
+                var header = document.querySelector('header, .header, #header, .topbar');
 
+                function computeAndApply() {
+                    try {
+                        // Detectamos elementos
+                        var menubar = document.getElementById('menubar');
+                        var main = document.getElementById('main-wrapper');
+                        var header = document.querySelector('header, .header, #header, .topbar, .navbar'); // varias opciones
+
+                        // Alto del header (fallback 0)
+                        var headerHeight = header ? (header.getBoundingClientRect().height || 0) : 0;
+
+                        // Ancho del menubar (solo si está "pinned")
+                        var menubarWidth = 0;
+                        if (document.body.classList.contains('menubar-pin') && menubar) {
+                            menubarWidth = menubar.getBoundingClientRect().width || 0;
+                            if (!menubarWidth) {
+                                var fallback = getComputedStyle(document.documentElement).getPropertyValue('--menubar-default-width');
+                                menubarWidth = parseInt(fallback) || 260;
+                            }
+                        }
+
+                        // Aplicamos estilos:
+                        if (menubar) {
+                            // hacemos fijo el menubar y lo empujamos hacia abajo según headerHeight
+                            menubar.style.position = 'fixed';
+                            menubar.style.top = headerHeight + 'px';
+                            // que ocupe el alto restante sin pasar por debajo del footer (si lo hay)
+                            menubar.style.height = (window.innerHeight - headerHeight) + 'px';
+                            menubar.style.overflowY = 'auto';
+                            // z-index menor que header (para que header esté por encima)
+                            menubar.style.zIndex = 1050;
+                        }
+
+                        if (main) {
+                            // En pantallas grandes dejamos margen-left para que el contenido no quede bajo el menubar
+                            if (window.innerWidth > 991) {
+                                main.style.marginLeft = menubarWidth + 'px';
+                            } else {
+                                main.style.marginLeft = '0px';
+                            }
+                            // padding-top para que el contenido no quede bajo el header
+                            main.style.paddingTop = headerHeight + 'px';
+                        }
+                    } catch (e) {
+                        console.error('computeAndApply error', e);
+                    }
+                }
+
+
+                // Ejecutar al cargar y al redimensionar
+                window.addEventListener('load', computeAndApply);
+                window.addEventListener('resize', computeAndApply);
+
+                // Observamos cambios en atributos del body (por ejemplo, classes que cambien menubar-pin)
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(m) {
+                        if (m.type === 'attributes' && m.attributeName === 'class') {
+                            computeAndApply();
+                        }
+                    });
+                });
+                observer.observe(document.body, {
+                    attributes: true
+                });
+
+                // Si el menubar cambia tamaño dinámicamente, ajustamos (ej: colapsa/expande)
+                if (menubar) {
+                    var ro = new ResizeObserver(function() {
+                        computeAndApply();
+                    });
+                    ro.observe(menubar);
+                }
+
+                // Búsqueda de aplicaciones (filtra los bloques .app-card)
+                $(document).ready(function() {
+                    $("#search").on("keyup", function() {
+                        var value = $(this).val().toLowerCase();
+                        $(".app-card").filter(function() {
+                            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                        });
+                    });
+
+                    // Hacemos un primer ajuste en caso de que todo ya exista
+                    computeAndApply();
+                });
+            })();
+        </script>
+    </section>
 </body>
+
 </html>
