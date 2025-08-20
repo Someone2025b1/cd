@@ -1,43 +1,10 @@
 <?php
-error_reporting(error_reporting() & ~E_NOTICE);
-	$db = mysqli_connect("10.60.58.214", "root","chatun2021");
-	if (!$db) {
-  	echo "Error con la base de datos, favor de comunicarse al departamento de IDT para verificar...";
- 	 exit;
-	}
-	$db1 = mysqli_connect("10.60.58.214", "root","chatun2021");
-//defino tipo de caracteres a manejar.
-	mysqli_set_charset($db, 'utf8');
-//defino variables globales de las tablas
-	$base_asociados = 'info_asociados';
-	$base_general = 'info_base';
-	$base_bbdd = 'info_bbdd';
-	$base_colaboradores = 'info_colaboradores';
-?>
-
-<?php
 include("../../../../../Script/seguridad.php");
-// include("../../../../../Script/conex.php");
-
-include("../../../../../Script/funciones.php");
+include("../../../../../Script/conex.php");
 $id_user = $_SESSION["iduser"];
- // 1801788
-// $Usuar==53711 | $Usuar==22045 | $Usuar==435849
-if($Usuar==1801788){
-	$Filtro="";
-}else{
-	$Filtro="AND CC_REALIZO ="."$Usuar";
-}
-$codigoProveedor = $_GET["codigo"];
- 
-// Obtener datos del proveedor usando P_CODIGO
-$sqlProveedor = "SELECT P_NOMBRE, P_DIRECCION, P_NIT FROM Contabilidad.PROVEEDOR WHERE P_CODIGO = '$codigoProveedor'";
-$resProveedor = mysqli_query($db, $sqlProveedor);
-$filaProveedor = mysqli_fetch_assoc($resProveedor);
-$nombreProveedor = $filaProveedor['P_NOMBRE'];
-$direccionProveedor = $filaProveedor['P_DIRECCION'];
-$nitProveedor = $filaProveedor['P_NIT'];
+$id_depto = $_SESSION["id_departamento"];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,8 +15,25 @@ $nitProveedor = $filaProveedor['P_NIT'];
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="your,keywords">
 	<!-- END META -->
-	
-    <script src="../../../../../libs/TableFilter/tablefilter_all_min.js"></script>
+
+	<!-- BEGIN JAVASCRIPT -->
+	<script src="../../../../../js/libs/jquery/jquery-1.11.2.min.js"></script>
+	<script src="../../../../../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
+	<script src="../../../../../js/libs/bootstrap/bootstrap.min.js"></script>
+	<script src="../../../../../js/libs/spin.js/spin.min.js"></script>
+	<script src="../../../../../js/libs/autosize/jquery.autosize.min.js"></script>
+	<script src="../../../../../js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
+	<script src="../../../../../js/core/source/App.js"></script>
+	<script src="../../../../../js/core/source/AppNavigation.js"></script>
+	<script src="../../../../../js/core/source/AppOffcanvas.js"></script>
+	<script src="../../../../../js/core/source/AppCard.js"></script>
+	<script src="../../../../../js/core/source/AppForm.js"></script>
+	<script src="../../../../../js/core/source/AppNavSearch.js"></script>
+	<script src="../../../../../js/core/source/AppVendor.js"></script>
+	<script src="../../../../../js/core/demo/Demo.js"></script>
+	<script src="../../../../../js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+	<script src="../../../../../libs/alertify/js/alertify.js"></script>
+	<!-- END JAVASCRIPT -->
 
 	<!-- BEGIN STYLESHEETS -->
 	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/bootstrap.css" />
@@ -57,291 +41,393 @@ $nitProveedor = $filaProveedor['P_NIT'];
 	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/font-awesome.min.css" />
 	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/material-design-iconic-font.min.css" />
 	<link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/libs/bootstrap-datepicker/datepicker3.css" />
-	<link rel="stylesheet" type="text/css" href="../../../../../libs/TableFilter/filtergrid.css">
+	<link type="text/css" rel="stylesheet" href="../../../../../libs/alertify/css/alertify.core.css"/>
+	<link type="text/css" rel="stylesheet" href="../../../../../libs/alertify/css/alertify.bootstrap.css"/>
 	<!-- END STYLESHEETS -->
-<script>
-        function calcularTotalPago() {
-            let abonos = document.getElementsByName('AbonoFac[]');
-            let saldos = document.getElementsByName('SaldoFac[]');
-            let restas = document.getElementsByName('RestaFac[]');
-            let total = 0;
- 
-            for (let i = 0; i < abonos.length; i++) {
-                let saldo = parseFloat(saldos[i].value);
-                let abono = parseFloat(abonos[i].value);
- 
-                if (isNaN(abono) || abono < 0) {
-                    abonos[i].value = "0.00";
-                    abono = 0;
-                }
- 
-                if (abono > saldo) {
-                    alertify.error('El abono no puede ser mayor que el saldo pendiente.');
-                    abonos[i].value = saldo.toFixed(2);
-                    abono = saldo;
-                }
-                
-                let resta = saldo - abono;
-                restas[i].value = resta.toFixed(2);
-                
-                total += abono;
-            }
-            document.getElementById('BoldTotal').value = total.toFixed(2);
-            document.getElementById('TotalPago').value = total.toFixed(2);
+
+	<style type="text/css">
+        .fila-base{
+            display: none;
         }
- 
-        function validarFormulario() {
-            let totalPagar = parseFloat(document.getElementById('BoldTotal').value);
-            if (totalPagar <= 0) {
-                alertify.alert('El monto total a pagar debe ser mayor a cero.');
-                return;
-            }
-            if (document.getElementById('TipoPago').value === '') {
-                alertify.alert('Debe seleccionar una forma de pago.');
-                return;
-            }
-            document.getElementById('FormularioPago').submit();
+    	.suggest-element{
+    		margin-left:5px;
+    		margin-top:5px;
+    		width:350px;
+    		cursor:pointer;
+    	}
+    	#suggestions {
+    		width:auto;
+    		height:auto;
+    		overflow: auto;
+    	}
+    </style>
+	<script type="text/javascript">
+$(document).ready(function() {
+    $("form").keypress(function(e) {
+        if (e.which == 13) {
+            return false;
         }
-        function TipoPago(x)
+    });
+});
+</script>
+	<script>
+	 //Función para agregar o eliminar filas en la tabla de construcciones
+        $(function(){
+        
+            // Clona la fila oculta que tiene los campos base, y la agrega al final de la tabla
+            $("#agregar").on('click', function(){
+                $("#tabla tbody tr:eq(0)").clone().removeClass('fila-base').appendTo("#tabla tbody");
+            });
+
+            // Evento que selecciona la fila y la elimina
+            $(document).on("click",".eliminar",function(){
+                var parent = $(this).parents().get(0);
+                $(parent).remove();
+            });
+        });
+        function BuscarCuenta(x){
+		        //Obtenemos el value del input
+		        var service = x.value;
+		        var dataString = 'service='+service;
+		        //Le pasamos el valor del input al ajax
+		        $.ajax({
+		            type: "POST",
+		            url: "buscarCuenta.php",
+		            data: dataString,
+		            beforeSend: function()
+		            {
+		            	$('#suggestions').html('<img src="../../../../../img/Preloader.gif" />');
+		            },
+		            success: function(data) {
+		            	if(data == '')
+		            	{
+		            		alertify.error('No se encontró ningún registro');
+		            		$('#suggestions').html('');
+		            	}
+		            	else
+		            	{
+		            		$('#ModalSugerencias').modal('show');
+			                //Escribimos las sugerencias que nos manda la consulta
+			                $('#suggestions').fadeIn(1000).html(data);
+			                //Al hacer click en algua de las sugerencias
+			                $('.suggest-element').click(function(){
+			                    x.value = $(this).attr('id')+"/"+$(this).attr('data');
+			                    //Hacemos desaparecer el resto de sugerencias
+			                    $('#suggestions').fadeOut(500);
+			                    $('#ModalSugerencias').modal('hide');
+			                    RevisarCuentas();
+			                });
+		            	}
+		            }
+		        });
+		}
+		function Calcular()
 		{
-			if(x == 1)
+			var TotalCargos = 0;
+			var TotalAbonos = 0;
+			var Contador = document.getElementsByName('Cargos[]');
+			var Cargos = document.getElementsByName('Cargos[]');
+			var Abonos = document.getElementsByName('Abonos[]');
+
+			for(i=0; i<Contador.length; i++)
 			{
-				$('#TipoPago').val(1);
-				
-				$('#FormaPagoTCredito').hide();
-				$('#SeleccionarMoneda').show();
-				$('#FormaPagoCredito').hide();
-				$('#FormaPagoDeposito').hide();
-				$('#NombreCredito').hide();
-				$('#NumeroAutorizacion').hide();
-				$('#FormaPagoMixto').hide();
+				TotalCargos = parseFloat(TotalCargos) + parseFloat(Cargos[i].value);
+				TotalAbonos = parseFloat(TotalAbonos) + parseFloat(Abonos[i].value);
 			}
-			else if(x == 2)
+			
+			$('#TotalCargos').val(TotalCargos.toFixed(2));
+			$('#TotalAbonos').val(TotalAbonos.toFixed(2));
+
+			if(TotalCargos.toFixed(2) == TotalAbonos.toFixed(2))
 			{
-				$('#TipoPago').val(2);
-				$('#SeleccionarMoneda').hide();
-				$('#FormaPagoEfectivo').hide();
-				$('#FormaPagoTCredito').show();
-				$('#FormaPagoCredito').hide();
-				$('#FormaPagoDeposito').hide();
-				$('#NombreCredito').hide();
-				$('#FormaPagoMixto').hide();
-				$('#FormaPagoEfectivoQuetzales').hide();
-				$('#FormaPagoEfectivoDolar').hide();
-				$('#FormaPagoEfectivoLempiras').hide();
-				$('#NumeroAutorizacion').show();
+				$('#ResultadoPartida').removeClass('alert alert-callout alert-danger');
+				$('#ResultadoPartida').addClass('alert alert-callout alert-success');
+				$('#NombreResultado').html('Partida Completa');
+				$('#btnGuardar').prop("disabled", false);
 			}
-			else if(x == 3)
+			else
 			{
-				$('#TipoPago').val(3);
-				$('#SeleccionarMoneda').hide();
-				$('#FormaPagoEfectivo').hide();
-				$('#FormaPagoTCredito').hide();
-				$('#FormaPagoCredito').show();
-				$('#FormaPagoDeposito').hide();
-				$('#FormaPagoMixto').hide();
-				$('#NombreCredito').show();
-				$('#FormaPagoEfectivoQuetzales').hide();
-				$('#FormaPagoEfectivoDolar').hide();
-				$('#FormaPagoEfectivoLempiras').hide();
-				$('#NumeroAutorizacion').hide();
-			}
-			else if(x == 4)
-			{
-				$('#TipoPago').val(4);
-				$('#SeleccionarMoneda').hide();
-				$('#FormaPagoEfectivo').hide();
-				$('#FormaPagoTCredito').hide();
-				$('#FormaPagoCredito').hide();
-				$('#FormaPagoDeposito').show();
-				$('#FormaPagoMixto').hide();
-				$('#NombreCredito').hide();
-				$('#FormaPagoEfectivoQuetzales').hide();
-				$('#FormaPagoEfectivoDolar').hide();
-				$('#FormaPagoEfectivoLempiras').hide();
-				$('#NumeroAutorizacion').hide();
-			}
-			else if(x == 5)
-			{
-				$('#TipoPago').val(5);
-				$('#SeleccionarMoneda').hide();
-				$('#FormaPagoEfectivo').hide();
-				$('#FormaPagoTCredito').hide();
-				$('#FormaPagoCredito').hide();
-				$('#FormaPagoDeposito').hide();
-				$('#FormaPagoMixto').show();
-				$('#NombreCredito').hide();
-				$('#FormaPagoEfectivoQuetzales').hide();
-				$('#FormaPagoEfectivoDolar').hide();
-				$('#FormaPagoEfectivoLempiras').hide();
-				$('#NumeroAutorizacion').hide();
+				$('#ResultadoPartida').removeClass('alert alert-callout alert-success');
+				$('#ResultadoPartida').addClass('alert alert-callout alert-danger');
+				$('#NombreResultado').html('Partida Incompleta');
+				$('#btnGuardar').prop("disabled", true);
 			}
 		}
-    </script>
-    </head>
-<body class="menubar-hoverable header-fixed menubar-pin" onload="calcularTotalPago()">
- 
-    <?php include("../../../../MenuTop.php") ?>
- 
-    <div id="base">
-        <div id="content">
-            <section>
-                <div class="section-body contain-lg">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-head style-primary">
-                                    <header>Registrar Pago a Proveedor</header>
-                                </div>
-                                <div class="card-body">
-                                    <form class="form" action="ProcesarPagoProveedor.php" method="POST" id="FormularioPago">
-                                        <input type="hidden" name="CodigoProveedor" value="<?php echo $codigoProveedor; ?>">
-                                        <div class="row">
-                                            <div class="col-sm-3">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" id="NIT" name="NIT" value="<?php echo $nitProveedor; ?>" readonly>
-                                                    <label for="NIT">NIT Proveedor</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-9">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" id="Nombre" name="Nombre" value="<?php echo $nombreProveedor; ?>" readonly>
-                                                    <label for="Nombre">Nombre</label>
-                                                </div>
-                                            </div>
-                                        </div>
- 
-                                        <div class="row">
-                                            <table class="table table-striped" id="tablaFacturas">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Factura Proveedor</th>
-                                                        <th>Concepto / Origen</th>
-                                                        <th>Monto Total</th>
-                                                        <th>Saldo Pendiente</th>
-                                                        <th style="width: 15%;">Abono</th>
-                                                        <th>Nuevo Saldo</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                <?php
-                                                $consultaFacturas = "SELECT CP.CP_CODIGO, T.TRA_CODIGO, T.TRA_FACTURA, T.TRA_CONCEPTO, CP.CP_TOTAL, (CP.CP_TOTAL - CP.CP_ABONO) AS SaldoPendiente
-                                                                     FROM Contabilidad.CUENTAS_POR_PAGAR AS CP
-                                                                     JOIN Contabilidad.TRANSACCION AS T ON CP.TRA_CODIGO = T.TRA_CODIGO
-                                                                     WHERE CP.N_CODIGO = '$codigoProveedor' AND CP.CP_ESTADO = 1 AND (CP.CP_TOTAL - CP.CP_ABONO) > 0";
-                                                $resFacturas = mysqli_query($db, $consultaFacturas);
-                                                while($fila = mysqli_fetch_assoc($resFacturas)) {
-                                                    $saldo = $fila['SaldoPendiente'];
-                                                ?>
-                                                    <tr>
-                                                        <input type="hidden" name="CodigoFac[]" value="<?php echo $fila['CP_CODIGO']; ?>">
-                                                        <td><input type="text" class="form-control" name="NumeroFactura[]" value="<?php echo $fila['TRA_FACTURA']; ?>" readonly></td>
-                                                        <td><input type="text" class="form-control" name="ConceptoFac[]" value="<?php echo $fila['TRA_CONCEPTO']; ?>" readonly></td>
-                                                        <td><input type="number" class="form-control" name="MontoFac[]" value="<?php echo $fila['CP_TOTAL']; ?>" readonly style="text-align: right;"></td>
-                                                        <td><input type="number" class="form-control" name="SaldoFac[]" value="<?php echo $saldo; ?>" readonly style="text-align: right;"></td>
-                                                        <td><input type="number" class="form-control" name="AbonoFac[]" value="0.00" onchange="calcularTotalPago()" onkeyup="calcularTotalPago()" min="0" step="any" style="text-align: right; background-color: #d1f8ff;"></td>
-                                                        <td><input type="number" class="form-control" name="RestaFac[]" value="<?php echo $saldo; ?>" readonly style="text-align: right;"></td>
-                                                    </tr>
-                                                <?php } ?>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="4" style="text-align: right; font-size: 1.2em;"><b>Total a Pagar Q.</b></td>
-                                                        <td><input class="form-control" type="text" id="BoldTotal" name="TotalFacturaFinal" value="0.00" readonly style="font-size: 1.2em; font-weight: bold; text-align: right;"></td>
-                                                        <td></td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
- 
-                                        <hr>
-                                        <h4>Detalle del Pago</h4>
-                                        
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <div class="form-group">
-                                                    <select id="TipoPago" name="TipoPago" class="form-control">
-                                                        <option value="" selected disabled>&nbsp;</option>
-                                                        <option value="1">Efectivo</option>
-                                                        <option value="2">Cheque</option>
-                                                        <option value="4">Transferencia / Depósito</option>
-                                                        <option value="5">Tarjeta</option>
-                                                    </select>
-                                                    <label for="TipoPago">Forma de Pago</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" id="TotalPago" name="TotalPago" readonly>
-                                                    <label for="TotalPago">Monto del Pago</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" id="NoDocumento" name="NoDocumento">
-                                                    <label for="NoDocumento">No. Cheque / Boleta / Autorización</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <div class="form-group">
-                                                    <select id="CuentaBancaria" name="CuentaBancaria" class="form-control">
-                                                        <option value="">&nbsp;</option>
-                                                        <?php
-                                                        $QueryCB = "SELECT N_CODIGO, N_NOMBRE FROM Contabilidad.NOMENCLATURA WHERE N_CODIGO LIKE '1.01.02.001' AND '1.01.02.999' ORDER BY N_NOMBRE";
-                                                        $ResultCB = mysqli_query($db, $QueryCB);
-                                                        while($FilaCB = mysqli_fetch_array($ResultCB)) {
-                                                            echo '<option value="'.$FilaCB["N_CODIGO"].'">'.$FilaCB["N_NOMBRE"].'</option>';
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                    <label for="CuentaBancaria">Cuenta de Origen (De dónde sale el dinero)</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <div class="form-group">
-                                                    <textarea name="Observaciones" id="Observaciones" class="form-control" rows="2"></textarea>
-                                                    <label for="Observaciones">Observaciones / Concepto del pago</label>
-                                                </div>
-                                            </div>
-                                        </div>
- 
-                                        <div class="card-actionbar-row">
-                                            <button type="button" class="btn btn-success btn-lg ink-reaction" onclick="validarFormulario()">
-                                                <i class="fa fa-save"></i> Registrar Pago
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+		function RevisarCuentas()
+		{
+			var i=0;
+			var Centinela = false;
+			var Contador = document.getElementsByName('Cargos[]');
+			var Cuenta = document.getElementsByName('Cuenta[]');
+
+			for(i=0; i<Contador.length; i++)
+			{
+				if(Cuenta[i].value == '1.01.04.006/Funcionarios y Empleados')
+				{
+					$('#DIVFuncionariosEmpleados').show();
+					$('#Tipo').val('FE');
+					$('#CIFSolicitante').attr("required", "required");
+					$('#NombreSolicitante').attr("required", "required");
+					
+				}
+				else
+				{
+					$('#DIVFuncionariosEmpleados').hide();
+					$('#Tipo').val('NE');
+					$('#CIFSolicitante').attr("required");
+					$('#NombreSolicitante').attr("required");
+				}
+			}
+		}
+		function SelColaborador(x)
+		{
+			window.open('SelColaborador.php','popup','width=750, height=700');
+		}
+	</script>
+
+<script>
+	function SaberMesPeriodo(x){
+
+		var service = $(x).val();
+		var dataString = 'service='+service;
+			
+			//Le pasamos el valor del input al ajax
+			$.ajax({
+				type: "POST",
+				url: "VerFechaConPeriodo.php",
+				data: dataString,
+				beforeSend: function()
+				{
+					$('#suggestions').html('<img src="../../../../../img/Preloader.gif" />');
+				},
+				success: function(data) {  
+							Periodo = data; 
+						}
+			});
+
+			}
+
+			function Comprovante(){
+
+var fecha = document.getElementById('Fecha').value;
+var Comprobante = document.getElementById('Comprobante').value;
+
+$.ajax({
+		url: 'ObtenerNoHojaSin.php',
+		type: 'POST',
+		data: {fecha:fecha},
+		success: function(data)
+		{
+			if(data)
+			{
+				$('#Comprobante').val(data);
+			}
+		}
+		})
+	
+
+
+}
+		
+
+	</script>
+	
+<script>
+	function IngresarPolizaSi(){
+
+		var mesperiodo1 = Periodo;
+		var mesperiodo2= new Date(mesperiodo1);
+		var mesperiodo3 = mesperiodo2.getMonth();
+		
+		var mesfecha1 = document.getElementById('Fecha').value;
+		var mesfecha2 = new Date(mesfecha1);
+		var mesfecha3 = mesfecha2.getMonth();
+
+		var mesfecha = mesfecha3+1;
+		var mesperiodo = mesperiodo3+1;
+
+		
+		if(mesfecha!=mesperiodo){
+		var respuesta = confirm("La Fecha no coincide con el Periodo Contable, ¿Quieres continuar con el ingreso de la Poliza?");
+
+		if (respuesta== true){
+
+			return true;
+
+			}else{
+				
+				return false;
+			}
+		}
+	}
+
+
+		</script>
+
+</head>
+<body class="menubar-hoverable header-fixed menubar-pin ">
+
+	<?php include("../../../../MenuTop.php") ?>
+
+
+	<!-- BEGIN BASE-->
+	<div id="base">
+
+		<!-- BEGIN CONTENT-->
+		<div id="content">
+			<div class="container">
+				<form class="form" action="IngresoPro.php" method="POST" role="form">
+					<div class="col-lg-12">
+						<br>
+						<div class="card">
+							<div class="card-head style-primary">
+								<h4 class="text-center"><strong>Pagar a varios Proveedores</strong></h4>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<div class="col-lg-3">
+										<div class="form-group">
+											<input class="form-control" type="text" name="Comprobante" id="Comprobante"  required/>
+											<label for="Comprobante">No. de Comprobante</label>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-lg-3">
+										<div class="form-group">
+											<input class="form-control" type="date" name="Fecha" id="Fecha" value="<?php echo date('Y-m-d'); ?>" required onChange="Comprovante()"/>
+											<label for="Fecha">Fecha</label>
+										</div>
+									</div>	
+								</div>
+								<script>					
+									Comprovante();	
+										</script>
+								<div class="row">
+									<div class="col-lg-3">
+										<div class="form-group">
+											<select name="Periodo" id="Periodo" class="form-control" onchange="SaberMesPeriodo(this)" required>
+												<option value="" disabled selected>Seleccione</option>
+												<?php
+													$QueryPeriodo = "SELECT * FROM Contabilidad.PERIODO_CONTABLE WHERE EPC_CODIGO = 1";
+													$ResultPeriodo = mysqli_query($db, $QueryPeriodo);
+													while($FilaP = mysqli_fetch_array($ResultPeriodo))
+													{
+														echo '<option value="'.$FilaP["PC_CODIGO"].'">'.$FilaP["PC_MES"]."-".$FilaP["PC_ANHO"].'</option>';
+												}
+												?>
+											</select>
+											<label for="Periodo">Periodo</label>
+										</div>
+									</div>	
+								</div>
+								<div class="row">
+									<div class="col-lg-10">
+										<div class="form-group">
+											<input class="form-control" maxlength="255" type="text" name="Concepto" id="Concepto" required/>
+											<label for="Concepto">Concepto</label>
+										</div>
+									</div>	
+								</div>
+								<div id="DIVFuncionariosEmpleados" style="display: none">
+									<div class="row">
+										<div class="col-lg-3">
+										<div class="form-group ">
+											<input class="form-control" type="text" name="CIFSolicitante" id="CIFSolicitante" readonly onclick="SelColaborador()"/>
+											<label for="CIFSolicitante">CIF del Solicitante</label>
+										</div>
+									</div>
+									<div class="col-lg-6">
+										<div class="form-group ">
+											<input class="form-control" type="text" name="NombreSolicitante" id="NombreSolicitante" readonly onclick="SelColaborador()"/>
+											<label for="NombreSolicitante">Nombre Solicitante</label>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="form-group floating-label">
+											<button class="btn btn-success btn-sm" onclick="SelColaborador()">Seleccionar Solicitante</button>
+										</div>
+									</div>
+									</div>
+								</div>
+								<div class="row">
+									<table class="table table-hover table-condensed" name="tabla" id="tabla">
+                                        <thead>
+                                            <tr>
+                                                <td><strong>Cuenta</strong></td>
+                                                <td><strong>Cargos</strong></td>
+                                                <td><strong>Abonos</strong></td>
+                                                <td><strong>Razón</strong></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="fila-base">
+                                                <td><h6><input type="text" class="form-control" name="Cuenta[]" id="Cuenta[]" style="width: 500px" onChange="BuscarCuenta(this)"></h6></td>
+                                                <td><h6><input type="number" step="any" class="form-control" name="Cargos[]" id="Cargos[]"  onChange="Calcular()" style="width: 100px" value="0.00" min="0"></h6></td>
+                                                <td><h6><input type="number" step="any" class="form-control" name="Abonos[]" id="Abonos[]" onChange="Calcular()" style="width: 100px" value="0.00"  min="0"></h6></td>
+                                                <td><h6><input type="text" class="form-control" name="Razon[]" id="Razon[]"></h6></td>
+                                                <td class="eliminar">
+                                                    <button type="button" class="btn btn-danger btn-xs">
+                                                        <span class="glyphicon glyphicon-remove-sign"></span> Eliminar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><h6><input type="text" class="form-control" name="Cuenta[]" id="Cuenta[]" style="width: 500px" onChange="BuscarCuenta(this)"></h6></td>
+                                                <td><h6><input type="number" step="any" class="form-control" name="Cargos[]" id="Cargos[]"  onChange="Calcular()" style="width: 100px" value="0.00" min="0"></h6></td>
+                                                <td><h6><input type="number" step="any" class="form-control" name="Abonos[]" id="Abonos[]" onChange="Calcular()" style="width: 100px" value="0.00"  min="0"></h6></td>
+                                                <td><h6><input type="text" class="form-control" name="Razon[]" id="Razon[]"></h6></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        	<tr>
+                                        		<td class="text-right">Total</td>
+                                                <td><h6><input type="number" step="any" class="form-control" name="TotalCargos" id="TotalCargos"  readonly style="width: 100px" value="0.00"></h6></td>
+                                                <td><h6><input type="number" step="any" class="form-control" name="TotalAbonos" id="TotalAbonos" readonly style="width: 100px" value="0.00"  ></h6></td>
+                                                <td><div style="height: 45px" id="ResultadoPartida" role="alert"><strong id="NombreResultado"></strong></div></td>
+                                        	</tr>
+                                        </tfoot>
+                                    </table>
+                                    <input class="form-control" type="hidden" name="Tipo" id="Tipo" value="NE" required/>
+                                    <div class="col-lg-12" align="left">
+                                        <button type="button" class="btn btn-success btn-xs" id="agregar">
+                                            <span class="glyphicon glyphicon-plus"></span> Agregar
+                                        </button>
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12" align="center">
+						<button type="submit" class="btn ink-reaction btn-raised btn-primary" id="btnGuardar" onclick="return IngresarPolizaSi()" disabled>Guardar</button>
+					</div>
+					<br>
+					<br>
+				</form>
+			</div>
+		</div>
+		<!-- END CONTENT -->
+		
+		<?php include("../MenuUsers.html"); ?>
+
+		<!-- Modal Detalle Pasivo Contingente -->
+        <div id="ModalSugerencias" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" align="center">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h2 class="modal-title">Resultados de su búsqueda</h2>
+                    </div>
+                    <div class="modal-body">
+                    	<div id="suggestions" class="text-center"></div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
-        <?php include("../MenuUsers2.html") ?>
-    </div>
-    <!-- BEGIN JAVASCRIPT -->
-		<script src="../../../../../js/libs/jquery/jquery-1.11.2.min.js"></script>
-		<script src="../../../../../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
-		<script src="../../../../../js/libs/bootstrap/bootstrap.min.js"></script>
-		<script src="../../../../../js/libs/spin.js/spin.min.js"></script>
-		<script src="../../../../../js/libs/autosize/jquery.autosize.min.js"></script>
-		<script src="../../../../../js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
-		<script src="../../../../../js/core/source/App.js"></script>
-		<script src="../../../../../js/core/source/AppNavigation.js"></script>
-		<script src="../../../../../js/core/source/AppOffcanvas.js"></script>
-		<script src="../../../../../js/core/source/AppCard.js"></script>
-		<script src="../../../../../js/core/source/AppForm.js"></script>
-		<script src="../../../../../js/core/source/AppNavSearch.js"></script>
-		<script src="../../../../../js/core/source/AppVendor.js"></script>
-		<script src="../../../../../js/core/demo/Demo.js"></script>
-		<script src="../../../../../js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
-		<!-- END JAVASCRIPT -->
+        <!-- /Modal Detalle Pasivo Contingente -->
 
+	</div><!--end #base-->
+	<!-- END BASE -->
 	</body>
 	</html>

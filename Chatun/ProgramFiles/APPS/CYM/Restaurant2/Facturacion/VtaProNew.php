@@ -109,7 +109,7 @@ $id_depto = $_SESSION["id_departamento"];
 			$TipoMoneda               = $_POST["MonedaPagoInput"];
 			$Observaciones 			  = $_POST["Observaciones"];
 			$NumeroResolucion 	      = $_POST["NumeroResolucion"];
-
+			$EventoPertenece          = $_POST["EventoPertenece"];
 			if($TipoPago == 1)
 			{
 				if($TipoMoneda == 1)
@@ -591,6 +591,14 @@ $TotalFacturaFinal=number_format($TotalFacturaFinal, 2, ".", "");
 
 				}
 			}
+			if($EventoPertenece!="SINEVENTO"){
+
+									$QueryEvento= mysqli_query($db, "UPDATE Eventos.EVENTO SET
+																				F_CODIGO = '".$Uid."'
+																				WHERE EV_CODIGO = '$EventoPertenece'");
+
+								}
+
 						?>
 					   	<script>
 					   		jQuery(document).ready(function($) {
@@ -1063,6 +1071,13 @@ $TotalFacturaFinal=number_format($TotalFacturaFinal, 2, ".", "");
 
 				}
 			}
+			if($EventoPertenece!="SINEVENTO"){
+
+	$QueryEvento= mysqli_query($db, "UPDATE Eventos.EVENTO SET
+												F_CODIGO = '".$Uid."'
+												WHERE EV_CODIGO = '$EventoPertenece'");
+
+}
 						?>
 					   	<script>
 					   		jQuery(document).ready(function($) {
@@ -1536,6 +1551,13 @@ $TotalFacturaFinal=number_format($TotalFacturaFinal, 2, ".", "");
 
 				}
 			}
+			if($EventoPertenece!="SINEVENTO"){
+
+	$QueryEvento= mysqli_query($db, "UPDATE Eventos.EVENTO SET
+												F_CODIGO = '".$Uid."'
+												WHERE EV_CODIGO = '$EventoPertenece'");
+
+}
 						?>
 					   	<script>
 					   		jQuery(document).ready(function($) {
@@ -2017,6 +2039,13 @@ $TotalFacturaFinal=number_format($TotalFacturaFinal, 2, ".", "");
 
 				}
 			}
+			if($EventoPertenece!="SINEVENTO"){
+
+	$QueryEvento= mysqli_query($db, "UPDATE Eventos.EVENTO SET
+												F_CODIGO = '".$Uid."'
+												WHERE EV_CODIGO = '$EventoPertenece'");
+
+}
 						?>
 					   	<script>
 					   		jQuery(document).ready(function($) {

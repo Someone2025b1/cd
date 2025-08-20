@@ -267,7 +267,25 @@ $id_depto = $_SESSION["id_departamento"];
 				}
 			})
 
+			CompEvento(x);
+		}
+		function CompEvento(x){
+			
+			var NIT = x;
+			
+			
+					if (x==92066097) 
+					{
+						$('#DivEvento').modal('show');
+					}else{
+						$('#DivEvento').modal('hide');
+					}
+					
+					
+			
 
+			
+			
 		}
 		function AbrirModalPrincipal(x)
 		{
@@ -835,6 +853,29 @@ WHERE A.ACC_FECHA = CURRENT_DATE() AND ACC_TIPO = 20";
 																<div class="form-group">
 																	<input class="form-control" type="text" name="Observaciones" id="Observaciones"/>
 																	<label for="Observaciones">Observaciones</label>
+																</div>
+															</div>
+														</div>
+														<div class="row" id="DivEvento" name="DivEvento"  style="display: none">
+															<div class="col-lg-10">
+																<div class="form-group">
+																<h6><select name="EventoPertenece" id="EventoPertenece" class="form-control"  required>
+																		<option value="" disabled selected>Seleccione una opción</option>
+																		<?php
+
+																			$QueryCB = "SELECT * FROM Eventos.EVENTO WHERE F_CODIGO IS NULL AND EV_ESTADO=0 AND EV_INFORMATIVO=0 AND EV_CANCELADO=0 AND EV_DUENO LIKE '%ACERCATE%' ORDER BY EV_FECHA_EV";
+																			$ResultCB = mysqli_query($db, $QueryCB);
+																			while($FilaCB = mysqli_fetch_array($ResultCB))
+																			{
+																				echo '<option value="'.$FilaCB["EV_CODIGO"].'">'.$FilaCB["EV_NOMBRE"].' / '.$FilaCB["EV_DUENO"].' / '.$FilaCB["EV_FECHA_EV"].' / '.$FilaCB["EV_LUGAR"].'</option>';
+																			}
+
+																			?>
+
+																			<option value="SINEVENTO">SIN EVENTO</option>
+																		</select>
+																		</h6>
+																		<label for="EventoPertenece">Evento Al que Pertenece</label>
 																</div>
 															</div>
 														</div>
