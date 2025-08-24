@@ -58,51 +58,50 @@ $id_user = $_SESSION["iduser"];
             margin-bottom: 10px;
         }
 
-        .titulo-pagina {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(90deg, #33b749ff, #00c6ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 25px 0;
-            text-transform: uppercase;
+        .app-card {
+            padding: 8px;
         }
 
-        /* Estilos para la nueva tabla */
-        .table-container {
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .table>thead>tr>th {
-            font-weight: 600;
-            color: #337ab7;
-        }
-
-        .table>tbody>tr.proveedor-row {
-            cursor: pointer;
-        }
-            
-        .table>tbody>tr.proveedor-row:hover {
-            background-color: #f5f5f5;
-        }
-
-        .collapse-details {
-            background-color: #f9f9f9;
-            border-left: 4px solid #337ab7;
-            padding: 15px;
-        }
-        
-        .collapse-details .detail-content {
+        .app-card .card {
+            min-height: 180px;
+            border-radius: 14px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            /* necesario para badge */
+            overflow: visible;
         }
 
+        .app-card .card .card-body {
+            position: relative;
+            padding: 1rem;
+        }
+
+        .btn-circle {
+            border-radius: 50%;
+            padding: 6px 8px;
+        }
+
+        /* Badge para proveedores activos */
         .badge-active {
-            background-color: #28a745;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #28a745;
+            color: white;
+            font-weight: 700;
+            padding: 4px 7px;
+            border-radius: 12px;
+            font-size: 13px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            line-height: 1;
+        }
+
+        /* Estilo para proveedores activos en el último año */
+        .activo-reciente .card {
+            border: 2px solid #28a745;
+            background-color: #e9f7ef;
         }
 
         /* Paginación */
@@ -141,12 +140,24 @@ $id_user = $_SESSION["iduser"];
             margin-left: 12px;
         }
 
+        /* checkbox + label inline */
         .filter-controls {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             margin-left: 12px;
         }
+
+        .titulo-pagina {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #33b749ff, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 25px 0;
+            text-transform: uppercase;
+        }
+
 
         @media (max-width: 991px) {
             #menubar {
@@ -180,99 +191,72 @@ $id_user = $_SESSION["iduser"];
                             <strong>Listado de Proveedores para Cuentas Por Pagar</strong>
                         </h1>
                         <input type="text" class="form-control" id="search" style="width:240px;display:inline-block;" placeholder="Buscar un proveedor..">
+                        <!-- filtro para mostrar solo activos -->
                         <span class="filter-controls" title="Mostrar sólo proveedores con movimientos en los últimos 12 meses">
                             <input type="checkbox" id="filterActive" style="vertical-align:middle;" />
                             <label for="filterActive" style="margin:0; font-size:13px; vertical-align:middle;">Mostrar sólo activos (último año)</label>
                         </span>
+                        <!-- tamaño de página -->
                         <select id="pageSize" class="form-control page-size-select" style="width:110px;display:inline-block;">
-                            <option value="10">10 / pág</option>
-                            <option value="15" selected>15 / pág</option>
-                            <option value="25">25 / pág</option>
-                            <option value="50">50 / pág</option>
+                            <option value="6">6 / pág</option>
+                            <option value="9">9 / pág</option>
+                            <option value="12" selected>12 / pág</option>
+                            <option value="20">20 / pág</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Nueva Tabla con Collapse -->
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="table-container">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Nombre del Proveedor</th>
-                                            <th class="text-center">Estado</th>
-                                            <th class="text-center">Ver Detalles</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="mytable">
-                                        <?php
-                                        // La lógica PHP y la consulta a la base de datos no se modifican
-                                        $sql = "
-                                            SELECT P.P_CODIGO, P.P_NOMBRE,
-                                                   CASE WHEN activos.P_CODIGO IS NOT NULL THEN 1 ELSE 0 END AS activo_reciente
-                                            FROM Contabilidad.PROVEEDOR P
-                                            LEFT JOIN (
-                                                SELECT DISTINCT TD.N_CODIGO AS P_CODIGO
-                                                FROM Contabilidad.TRANSACCION_DETALLE TD
-                                                JOIN Contabilidad.TRANSACCION T ON TD.TRA_CODIGO = T.TRA_CODIGO
-                                                WHERE T.TRA_FECHA_TRANS BETWEEN CURDATE() - INTERVAL 1 YEAR AND CURDATE()
-                                                  AND T.E_CODIGO = 2 AND T.TRA_ESTADO = 1
-                                            ) activos ON P.P_CODIGO = activos.P_CODIGO
-                                            ORDER BY activo_reciente DESC, P.P_NOMBRE;
-                                        ";
-                                        $Sql_Aplicativos = mysqli_query($db, $sql);
-                                        if (!$Sql_Aplicativos) {
-                                            $Sql_Aplicativos = mysqli_query($db, "SELECT P_CODIGO, P_NOMBRE FROM Contabilidad.PROVEEDOR");
-                                        }
-                                        
-                                        $contador = 0;
-                                        while ($Fila_Aplicativos = mysqli_fetch_array($Sql_Aplicativos)) {
-                                            $contador++;
-                                            $Link  = "ListaCuentasPorPagarPro.php?CodigoCuenta=" . $Fila_Aplicativos['P_CODIGO'] . "&NombreCuenta=" . urlencode($Fila_Aplicativos['P_NOMBRE']);
-                                            $activo = isset($Fila_Aplicativos['activo_reciente']) ? intval($Fila_Aplicativos['activo_reciente']) : 0;
-                                            $clase_activo = $activo ? 'activo-reciente' : '';
-                                            $collapseId = "collapse_" . $contador;
-                                        ?>
-                                            <!-- Fila principal que activa el collapse -->
-                                            <tr class="proveedor-row <?php echo $clase_activo ?>" data-toggle="collapse" data-target="#<?php echo $collapseId ?>" aria-expanded="false" aria-controls="<?php echo $collapseId ?>">
-                                                <td><?php echo htmlspecialchars($Fila_Aplicativos['P_NOMBRE']); ?></td>
-                                                <td class="text-center">
-                                                    <?php if ($activo): ?>
-                                                        <span class="badge badge-active">Activo</span>
-                                                    <?php else: ?>
-                                                        <span class="badge">Inactivo</span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td class="text-center"><i class="fa fa-chevron-down"></i></td>
-                                            </tr>
-                                            <!-- Fila oculta con los detalles (collapse) -->
-                                            <tr>
-                                                <td colspan="3" style="padding: 0 !important;">
-                                                    <div class="collapse collapse-details" id="<?php echo $collapseId ?>">
-                                                        <div class="detail-content">
-                                                            <div>
-                                                                <strong>Código de Proveedor:</strong> <?php echo $Fila_Aplicativos['P_CODIGO']; ?><br>
-                                                                <?php if ($activo): ?>
-                                                                    <small style="color:#28a745;">Este proveedor ha tenido movimientos en el último año.</small>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                            <a href="<?php echo $Link ?>" class="btn btn-primary">
-                                                                <i class="fa fa-eye"></i> Ver Cuentas por Pagar
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                <!-- Grid responsivo de apps -->
+                <div class="row" id="mytable">
+                    <?php
+                    // Consulta mejorada: prioriza proveedores con actividad en el último año
+                    $sql = "
+                        SELECT P.P_CODIGO, P.P_NOMBRE,
+                               CASE WHEN activos.P_CODIGO IS NOT NULL THEN 1 ELSE 0 END AS activo_reciente
+                        FROM Contabilidad.PROVEEDOR P
+                        LEFT JOIN (
+                            SELECT DISTINCT TD.N_CODIGO AS P_CODIGO
+                            FROM Contabilidad.TRANSACCION_DETALLE TD
+                            JOIN Contabilidad.TRANSACCION T ON TD.TRA_CODIGO = T.TRA_CODIGO
+                            WHERE T.TRA_FECHA_TRANS BETWEEN CURDATE() - INTERVAL 1 YEAR AND CURDATE()
+                              AND T.E_CODIGO = 2 AND T.TRA_ESTADO = 1
+                        ) activos ON P.P_CODIGO = activos.P_CODIGO
+                        ORDER BY activo_reciente DESC, P.P_NOMBRE;
+                    ";
+                    $Sql_Aplicativos = mysqli_query($db, $sql);
+                    if (!$Sql_Aplicativos) {
+                        // Si la consulta falla, intentamos con la consulta simple original como fallback
+                        $Sql_Aplicativos = mysqli_query($db, "SELECT P_CODIGO, P_NOMBRE FROM Contabilidad.PROVEEDOR");
+                    }
+                    while ($Fila_Aplicativos = mysqli_fetch_array($Sql_Aplicativos)) {
+                        $Icono = "../../../../APPS/IDT/Imagenes/Aplicaciones/rrhh2.png";
+                        $Link  = "ListaCuentasPorPagarPro.php?CodigoCuenta=" . $Fila_Aplicativos['P_CODIGO'] . "&NombreCuenta=" . urlencode($Fila_Aplicativos['P_NOMBRE']);
+                        // Determinar clase si existe campo activo_reciente (fallback 0 si no existe)
+                        $activo = isset($Fila_Aplicativos['activo_reciente']) ? intval($Fila_Aplicativos['activo_reciente']) : 0;
+                        $clase = $activo ? 'activo-reciente' : '';
+                    ?>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 app-card <?php echo $clase ?>">
+                            <a href="<?php echo $Link ?>">
+                                <div class="card h-100">
+                                    <?php if ($activo): ?>
+                                        <div class="badge-active" aria-hidden="true">★ Activo</div>
+                                    <?php endif; ?>
+                                    <div class="text-center p-3">
+                                        <img src="<?php echo $Icono ?>" height="80" width="80" alt="icono" loading="lazy">
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h4 class="font-normal">
+                                            <?php echo $Fila_Aplicativos['P_NOMBRE'] ?>
+                                            <?php if ($activo): ?>
+                                                <br><small style="color:#28a745;">(Activo último año)</small>
+                                            <?php endif; ?>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
+                    <?php } ?>
                 </div>
-
 
                 <!-- Controles de paginación -->
                 <div class="row">
@@ -306,7 +290,7 @@ $id_user = $_SESSION["iduser"];
         <!-- JS para ajustar layout dinámicamente y búsqueda + paginación -->
         <script>
             (function() {
-                // --- layout helpers (sin cambios) ---
+                // --- layout helpers (no tocamos la lógica) ---
                 var main = document.getElementById('main-wrapper');
                 var menubar = document.getElementById('menubar');
                 var header = document.querySelector('header, .header, #header, .topbar');
@@ -316,7 +300,9 @@ $id_user = $_SESSION["iduser"];
                         var menubar = document.getElementById('menubar');
                         var main = document.getElementById('main-wrapper');
                         var header = document.querySelector('header, .header, #header, .topbar, .navbar');
+
                         var headerHeight = header ? (header.getBoundingClientRect().height || 0) : 0;
+
                         var menubarWidth = 0;
                         if (document.body.classList.contains('menubar-pin') && menubar) {
                             menubarWidth = menubar.getBoundingClientRect().width || 0;
@@ -325,6 +311,7 @@ $id_user = $_SESSION["iduser"];
                                 menubarWidth = parseInt(fallback) || 260;
                             }
                         }
+
                         if (menubar) {
                             menubar.style.position = 'fixed';
                             menubar.style.top = headerHeight + 'px';
@@ -332,6 +319,7 @@ $id_user = $_SESSION["iduser"];
                             menubar.style.overflowY = 'auto';
                             menubar.style.zIndex = 1050;
                         }
+
                         if (main) {
                             if (window.innerWidth > 991) {
                                 main.style.marginLeft = menubarWidth + 'px';
@@ -344,8 +332,10 @@ $id_user = $_SESSION["iduser"];
                         console.error('computeAndApply error', e);
                     }
                 }
+
                 window.addEventListener('load', computeAndApply);
                 window.addEventListener('resize', computeAndApply);
+
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(m) {
                         if (m.type === 'attributes' && m.attributeName === 'class') {
@@ -356,34 +346,40 @@ $id_user = $_SESSION["iduser"];
                 observer.observe(document.body, {
                     attributes: true
                 });
+
                 if (menubar) {
                     try {
                         var ro = new ResizeObserver(function() {
                             computeAndApply();
                         });
                         ro.observe(menubar);
-                    } catch (err) {}
+                    } catch (err) {
+                        // ResizeObserver puede no estar en navegadores muy viejos
+                    }
                 }
 
-                // --- Paginación y búsqueda para la TABLA ---
-                var $rows = null; // Todas las filas .proveedor-row
+                // --- paginación en cliente (ligera) ---
+                var $cards = null; // todos los .app-card
                 var currentPage = 1;
-                var pageSize = parseInt($('#pageSize').val()) || 15;
+                var pageSize = parseInt($('#pageSize').val()) || 12;
 
-                function collectRows() {
-                    $rows = $("#mytable .proveedor-row");
+                function collectCards() {
+                    // reconstruye la lista de tarjetas actuales (DOM)
+                    $cards = $(".app-card");
                 }
 
                 function getFilteredIndices(filterText) {
+                    // Devuelve array de índices de elementos que coinciden con el filtro
                     var indices = [];
                     filterText = (filterText || "").toLowerCase();
                     var activeOnly = $('#filterActive').is(':checked');
 
-                    $rows.each(function(i) {
-                        var $row = $(this);
-                        var text = $row.text().toLowerCase();
+                    $cards.each(function(i) {
+                        var $card = $(this);
+                        var text = $card.text().toLowerCase();
 
-                        if (activeOnly && !$row.hasClass('activo-reciente')) {
+                        // si está activado el filtro "solo activos" y la tarjeta no tiene la clase, skip
+                        if (activeOnly && !$card.hasClass('activo-reciente')) {
                             return; // continue
                         }
 
@@ -395,27 +391,25 @@ $id_user = $_SESSION["iduser"];
                 }
 
                 function renderPage(page) {
+                    // muestra sólo la página solicitada
                     var filter = $('#search').val().toLowerCase();
                     var indices = getFilteredIndices(filter);
                     var total = indices.length;
                     var totalPages = Math.max(1, Math.ceil(total / pageSize));
 
+                    // normalizar página
                     if (page < 1) page = 1;
                     if (page > totalPages) page = totalPages;
                     currentPage = page;
 
-                    // Ocultar todas las filas (tanto la principal como la de detalles)
-                    $('#mytable tr').hide();
+                    // ocultar todo y luego mostrar sólo los índices que tocan
+                    $cards.hide();
 
                     var start = (currentPage - 1) * pageSize;
                     var end = start + pageSize;
                     for (var pos = start; pos < end && pos < total; pos++) {
                         var idx = indices[pos];
-                        var $mainRow = $rows.eq(idx);
-                        var $detailRow = $mainRow.next('tr'); // La fila de detalles es la siguiente
-                        
-                        $mainRow.show();
-                        $detailRow.show(); // Mostramos la fila de detalles para que el collapse funcione
+                        $cards.eq(idx).show();
                     }
 
                     renderPaginationControls(totalPages, currentPage);
@@ -425,17 +419,20 @@ $id_user = $_SESSION["iduser"];
                     var $p = $('#paginationControls');
                     $p.empty();
 
+                    // helper para crear botón
                     function btn(label, page, cls) {
                         var $b = $('<div class="page-btn"></div>').text(label).data('page', page);
                         if (cls) $b.addClass(cls);
                         return $b;
                     }
 
+                    // Prev
                     var $prev = btn('«', activePage - 1);
                     if (activePage === 1) $prev.addClass('disabled');
                     $p.append($prev);
 
-                    var maxButtons = 7;
+                    // lógica para mostrar hasta N botones y usar "..." cuando hay muchas páginas
+                    var maxButtons = 7; // ajustar si quieres más
                     var half = Math.floor(maxButtons / 2);
                     var start = Math.max(1, activePage - half);
                     var end = Math.min(totalPages, start + maxButtons - 1);
@@ -443,6 +440,7 @@ $id_user = $_SESSION["iduser"];
                         start = Math.max(1, end - maxButtons + 1);
                     }
 
+                    // si hay un inicio mayor a 1, ponemos 1 y "..."
                     if (start > 1) {
                         $p.append(btn(1, 1));
                         if (start > 2) $p.append($('<div class="page-btn disabled">...</div>'));
@@ -453,21 +451,25 @@ $id_user = $_SESSION["iduser"];
                         $p.append(btn(i, i, cls));
                     }
 
+                    // si hay resto, ponemos "..." y última
                     if (end < totalPages) {
                         if (end < totalPages - 1) $p.append($('<div class="page-btn disabled">...</div>'));
                         $p.append(btn(totalPages, totalPages));
                     }
 
+                    // Next
                     var $next = btn('»', activePage + 1);
                     if (activePage === totalPages) $next.addClass('disabled');
                     $p.append($next);
 
+                    // Evento click (delegación)
                     $p.off('click').on('click', '.page-btn', function() {
                         var $this = $(this);
                         if ($this.hasClass('disabled') || $this.hasClass('active')) return;
                         var toPage = $this.data('page');
                         if (typeof toPage === 'number') {
                             renderPage(toPage);
+                            // scroll suave al grid (para UX)
                             $('html, body').animate({
                                 scrollTop: $('#mytable').offset().top - 80
                             }, 200);
@@ -475,33 +477,45 @@ $id_user = $_SESSION["iduser"];
                     });
                 }
 
+                // --- eventos de búsqueda y cambio tamaño página ---
                 $(document).ready(function() {
-                    collectRows();
+                    collectCards();
+                    // Render inicial
                     renderPage(1);
 
+                    // búsqueda: siempre vuelve a la página 1
                     $('#search').on('input', function() {
                         currentPage = 1;
                         renderPage(1);
                     });
 
+                    // filtro "solo activos"
                     $('#filterActive').on('change', function() {
                         currentPage = 1;
                         renderPage(1);
                     });
 
+                    // cambio tamaño de página
                     $('#pageSize').on('change', function() {
-                        pageSize = parseInt($(this).val()) || 15;
+                        pageSize = parseInt($(this).val()) || 12;
                         currentPage = 1;
                         renderPage(1);
                     });
 
-                    // Icono de flecha en collapse
-                    $('#mytable').on('show.bs.collapse', '.collapse', function () {
-                        $(this).closest('tr').prev('tr.proveedor-row').find('.fa').removeClass('fa-chevron-down').addClass('fa-chevron-up');
-                    }).on('hide.bs.collapse', '.collapse', function () {
-                        $(this).closest('tr').prev('tr.proveedor-row').find('.fa').removeClass('fa-chevron-up').addClass('fa-chevron-down');
-                    });
+                    // Si el DOM cambia (p. ej. se recargan tarjetas), reconstruimos
+                    var container = document.getElementById('mytable');
+                    if (container) {
+                        var mo = new MutationObserver(function() {
+                            collectCards();
+                            renderPage(1);
+                        });
+                        mo.observe(container, {
+                            childList: true,
+                            subtree: false
+                        });
+                    }
 
+                    // primer ajuste layout
                     computeAndApply();
                 });
 
