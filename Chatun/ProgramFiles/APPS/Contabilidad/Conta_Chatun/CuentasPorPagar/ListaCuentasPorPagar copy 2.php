@@ -3,29 +3,26 @@ include("../../../../../Script/seguridad.php");
 include("../../../../../Script/conex.php");
 include("../../../../../Script/funciones.php");
 $id_user = $_SESSION["iduser"];
-$defaultStart = date('Y-m-01', strtotime('-3 months'));
-$defaultEnd = date('Y-m-d');
-$FechaIni = !empty($_GET['FechaInicio']) ? date('Y-m-d', strtotime($_GET['FechaInicio'])) : $defaultStart;
-$FechaFin = !empty($_GET['FechaFin']) ? date('Y-m-d', strtotime($_GET['FechaFin'])) : $defaultEnd;
-
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-    <title>Últimas Facturas de Proveedores</title>
+    <title>Portal Institucional Chatún</title>
+
     <!-- META -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- STYLESHEETS -->
+    <!-- STYLESHEETS -->
     <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/bootstrap.css" />
     <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/materialadmin.css" />
     <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/font-awesome.min.css" />
     <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/material-design-iconic-font.min.css" />
     <link type="text/css" rel="stylesheet" href="../../../../../css/theme-4/libs/bootstrap-datepicker/datepicker3.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../libs/TableFilter/filtergrid.css">
-<!-- Layout fixes + responsive tweaks -->
+
+    <!-- Layout fixes + responsive tweaks -->
     <style>
         :root {
             --menubar-default-width: 260px;
@@ -59,9 +56,6 @@ $FechaFin = !empty($_GET['FechaFin']) ? date('Y-m-d', strtotime($_GET['FechaFin'
         .search-row {
             margin-top: 10px;
             margin-bottom: 10px;
-        }
-.modal .modal-dialog {
-            max-width: 420px;
         }
 
         .titulo-pagina {
@@ -153,22 +147,7 @@ $FechaFin = !empty($_GET['FechaFin']) ? date('Y-m-d', strtotime($_GET['FechaFin'
             gap: 8px;
             margin-left: 12px;
         }
-.btn-date-range {
-            background: linear-gradient(90deg, #00c6ff, #33b749);
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 6px 18px rgba(51, 183, 73, 0.12);
-            display: inline-flex;
-            gap: 8px;
-            align-items: center;
-            cursor: pointer;
-        }
 
-        .btn-date-range i {
-            font-size: 16px;
-        }
         @media (max-width: 991px) {
             #menubar {
                 left: -100%;
@@ -189,21 +168,22 @@ $FechaFin = !empty($_GET['FechaFin']) ? date('Y-m-d', strtotime($_GET['FechaFin'
 <body class="menubar-hoverable header-fixed menubar-pin">
 
     <section id="wrapper" class="login-register login-sidebar">
+
         <?php include("../../../../MenuTop.php") ?>
+
         <div id="main-wrapper">
             <div class="container-fluid">
                 <div class="row search-row">
-                    
                     <div class="col-xs-12 text-right">
                         <h1 class="titulo-pagina text-center">
-                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                            <strong>Últimas Facturas de Proveedores</strong>
+                            <i class="fa fa-building" aria-hidden="true"></i>
+                            <strong>Listado de Proveedores para Cuentas Por Pagar</strong>
                         </h1>
-                        <input type="text" class="form-control" id="search" style="width:240px;display:inline-block;" placeholder="Buscar...">
-                        <button class="btn-date-range" type="button" data-toggle="modal" data-target="#dateRangeModal">
-                                <i class="fa fa-calendar" aria-hidden="true"></i>
-                                <span id="btnDateLabel">Cambiar Rango</span>
-                            </button>
+                        <input type="text" class="form-control" id="search" style="width:240px;display:inline-block;" placeholder="Buscar un proveedor..">
+                        <span class="filter-controls" title="Mostrar sólo proveedores con movimientos en los últimos 12 meses">
+                            <input type="checkbox" id="filterActive" style="vertical-align:middle;" />
+                            <label for="filterActive" style="margin:0; font-size:13px; vertical-align:middle;">Mostrar sólo activos (último año)</label>
+                        </span>
                         <select id="pageSize" class="form-control page-size-select" style="width:110px;display:inline-block;">
                             <option value="10">10 / pág</option>
                             <option value="15" selected>15 / pág</option>
@@ -213,6 +193,7 @@ $FechaFin = !empty($_GET['FechaFin']) ? date('Y-m-d', strtotime($_GET['FechaFin'
                     </div>
                 </div>
 
+                <!-- Nueva Tabla con Collapse -->
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="table-container">
@@ -220,88 +201,75 @@ $FechaFin = !empty($_GET['FechaFin']) ? date('Y-m-d', strtotime($_GET['FechaFin'
                                 <table class="table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Proveedor</th>
-                                            <th>Codigo de Proveedor</th>
-                                            <th>Factura</th>
-                                            <th>Fecha Factura</th>
-                                            <th>Ultima Fecha Para Pagar</th>
-                                            <th class="text-end">Monto</th>
-                                            <th>Concepto</th>
-                                            <th class="text-center">Detalles</th>
+                                            <th>Nombre del Proveedor</th>
+                                            <th>Codigo del Proveedor</th>
+                                            <th>Ultima Factura</th>
+                                            <th>Fehcha de Factura</th>
+                                            <th>Ultima fecha de pago</th>
+                                            <th>Monto</th>
+                                            <th class="text-center">Estado</th>
+                                            <th class="text-center">Ver Detalles</th>
                                         </tr>
                                     </thead>
                                     <tbody id="mytable">
                                         <?php
-                                        // --- CONSULTA SQL ADAPTADA Y CORREGIDA ---
+                                        // La lógica PHP y la consulta a la base de datos no se modifican
                                         $sql = "
-                                            
-                                                
-                                                SELECT 
-    p.P_NOMBRE,
-    p.P_CODIGO,
-    p.P_CODIGO_CUENTA,
-    p.P_DIAS_CREDITO,
-    CONCAT(t.TRA_SERIE, '-', t.TRA_FACTURA) AS NumeroFactura,
-    td.N_CODIGO,
-    t.TRA_FECHA_TRANS,
-	 td.TRA_CODIGO,
-    td.TRAD_CODIGO,
-    td.TRAD_CORRELATIVO,
-    td.TRAD_ABONO_CONTA,
-    t.TRA_FECHA_TRANS,
-    LEFT(t.TRA_CONCEPTO, 256) AS Razon_Recortada,
-    IFNULL(NULLIF(p.P_DIAS_CREDITO, 0), 15) AS DiasCredito,
-    -- Calculamos la fecha de vencimiento directamente en la consulta
-        DATE_ADD(t.TRA_FECHA_TRANS, INTERVAL p.P_DIAS_CREDITO DAY) AS FechaVencimiento
-FROM 
-    Contabilidad.TRANSACCION_DETALLE AS td
-JOIN 
-    Contabilidad.TRANSACCION AS t ON td.TRA_CODIGO = t.TRA_CODIGO -- <-- ESTA ES LA CORRECCIÓN CLAVE
-JOIN 
-    Contabilidad.PROVEEDOR AS p ON td.N_CODIGO =p.P_CODIGO -- <-- ESTA ES LA CORRECCIÓN CLAVE
-WHERE
-	 td.TRAD_ABONO_CONTA > 0 AND
-     (t.TRA_FECHA_TRANS BETWEEN ? AND ?)
-ORDER BY 
-    t.TRA_FECHA_TRANS ASC,  -- Ordenar por la fecha de la transacción, que es más lógico
-    t.TRA_HORA ASC          -- Y luego por la hora para obtener la más reciente
-;
+                                            SELECT P.P_CODIGO, P.P_NOMBRE,
+                                                   CASE WHEN activos.P_CODIGO IS NOT NULL THEN 1 ELSE 0 END AS activo_reciente
+                                            FROM Contabilidad.PROVEEDOR P
+                                            LEFT JOIN (
+                                                SELECT DISTINCT TD.N_CODIGO AS P_CODIGO
+                                                FROM Contabilidad.TRANSACCION_DETALLE TD
+                                                JOIN Contabilidad.TRANSACCION T ON TD.TRA_CODIGO = T.TRA_CODIGO
+                                                WHERE T.TRA_FECHA_TRANS BETWEEN CURDATE() - INTERVAL 1 YEAR AND CURDATE()
+                                                  AND T.E_CODIGO = 2 AND T.TRA_ESTADO = 1
+                                            ) activos ON P.P_CODIGO = activos.P_CODIGO
+                                            ORDER BY activo_reciente DESC, P.P_NOMBRE;
                                         ";
+                                        $Sql_Aplicativos = mysqli_query($db, $sql);
+                                        if (!$Sql_Aplicativos) {
+                                            $Sql_Aplicativos = mysqli_query($db, "SELECT P_CODIGO, P_NOMBRE FROM Contabilidad.PROVEEDOR");
+                                        }
                                         
-                                        $stmt = mysqli_prepare($db, $sql);
-// Se enlazan las variables de fecha a los placeholders
-mysqli_stmt_bind_param($stmt, 'ss', $FechaIni, $FechaFin);
-mysqli_stmt_execute($stmt);
-$resultado = mysqli_stmt_get_result($stmt);
                                         $contador = 0;
-                                        while ($fila = mysqli_fetch_array($resultado)) {
+                                        while ($Fila_Aplicativos = mysqli_fetch_array($Sql_Aplicativos)) {
                                             $contador++;
+                                            $Link  = "ListaCuentasPorPagarPro.php?CodigoCuenta=" . $Fila_Aplicativos['P_CODIGO'] . "&NombreCuenta=" . urlencode($Fila_Aplicativos['P_NOMBRE']);
+                                            $activo = isset($Fila_Aplicativos['activo_reciente']) ? intval($Fila_Aplicativos['activo_reciente']) : 0;
+                                            $clase_activo = $activo ? 'activo-reciente' : '';
                                             $collapseId = "collapse_" . $contador;
-                                            $link_estado_cuenta = "ListaCuentasPorPagarPro.php?CodigoCuenta=" . urlencode($fila['P_CODIGO']) . "&NombreCuenta=" . urlencode($fila['P_NOMBRE']);
                                         ?>
                                             <!-- Fila principal que activa el collapse -->
-                                            <tr class="factura-row" data-toggle="collapse" data-target="#<?php echo $collapseId; ?>" aria-expanded="false" aria-controls="<?php echo $collapseId; ?>">
-                                                <td><?php echo htmlspecialchars($fila['P_NOMBRE']); ?></td>
-                                                <td><?php echo htmlspecialchars($fila['P_CODIGO']); ?></td>
-                                                <td><?php echo htmlspecialchars($fila['NumeroFactura']); ?></td>
-                                                <td><?php echo date('d-m-Y', strtotime($fila['TRA_FECHA_TRANS'])); ?></td>
-                                                <td><?php echo date('d-m-Y', strtotime($fila['FechaVencimiento'])); ?></td>
-                                                <td class="text-end"><?php echo 'Q ' . number_format($fila['TRAD_ABONO_CONTA'], 2); ?></td>
-                                                <td><?php echo htmlspecialchars($fila['Razon_Recortada']); ?></td>
+                                            <tr class="proveedor-row <?php echo $clase_activo ?>" data-toggle="collapse" data-target="#<?php echo $collapseId ?>" aria-expanded="false" aria-controls="<?php echo $collapseId ?>">
+                                                <td><?php echo htmlspecialchars($Fila_Aplicativos['P_NOMBRE']); ?></td>
+                                                <td><?php echo htmlspecialchars($Fila_Aplicativos['P_CODIGO']); ?></td>
+                                                <td><?php echo htmlspecialchars($Fila_Aplicativos['P_CODIGO']); ?></td>
+                                                <td><?php echo htmlspecialchars($Fila_Aplicativos['P_CODIGO']); ?></td>
+                                                <td><?php echo htmlspecialchars($Fila_Aplicativos['P_CODIGO']); ?></td>
+                                                <td><?php echo htmlspecialchars($Fila_Aplicativos['P_CODIGO']); ?></td>
+                                                <td class="text-center">
+                                                    <?php if ($activo): ?>
+                                                        <span class="badge badge-active">Activo</span>
+                                                    <?php else: ?>
+                                                        <span class="badge">Inactivo</span>
+                                                    <?php endif; ?>
+                                                </td>
                                                 <td class="text-center"><i class="fa fa-chevron-down"></i></td>
                                             </tr>
                                             <!-- Fila oculta con los detalles (collapse) -->
                                             <tr>
-                                                <td colspan="6" style="padding: 0 !important; border: 0;">
-                                                    <div class="collapse collapse-details" id="<?php echo $collapseId; ?>">
+                                                <td colspan="3" style="padding: 0 !important;">
+                                                    <div class="collapse collapse-details" id="<?php echo $collapseId ?>">
                                                         <div class="detail-content">
                                                             <div>
-                                                                <strong>Cuenta Contable:</strong> <?php echo htmlspecialchars($fila['P_CODIGO_CUENTA']); ?><br>
-                                                                <strong>Código Transacción:</strong> <?php echo htmlspecialchars($fila['TRA_CODIGO']); ?>
-                                                                <strong>Dias de Credito:</strong> <?php echo htmlspecialchars($fila['DiasCredito']); ?>
+                                                                <strong>Código de Proveedor:</strong> <?php echo $Fila_Aplicativos['P_CODIGO']; ?><br>
+                                                                <?php if ($activo): ?>
+                                                                    <small style="color:#28a745;">Este proveedor ha tenido movimientos en el último año.</small>
+                                                                <?php endif; ?>
                                                             </div>
-                                                            <a href="<?php echo $link_estado_cuenta; ?>" class="btn btn-primary">
-                                                                <i class="fa fa-eye"></i> Ver Estado de Cuenta del Proveedor
+                                                            <a href="<?php echo $Link ?>" class="btn btn-primary">
+                                                                <i class="fa fa-eye"></i> Ver Cuentas por Pagar
                                                             </a>
                                                         </div>
                                                     </div>
@@ -315,44 +283,20 @@ $resultado = mysqli_stmt_get_result($stmt);
                     </div>
                 </div>
 
+
+                <!-- Controles de paginación -->
                 <div class="row">
                     <div class="col-xs-12">
                         <div id="paginationControls" class="pagination-wrap"></div>
                     </div>
                 </div>
+
             </div>
+
             <?php include("../MenuUsers.html"); ?>
         </div>
-<!-- Modal para Rango de Fechas -->
-    <div class="modal fade" id="dateRangeModal" tabindex="-1" role="dialog" aria-labelledby="dateRangeModalLabel">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form method="get" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="dateRangeModalLabel">Seleccionar Rango de Fechas</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="form-label">Fecha de Inicio</label>
-                            <input type="text" class="form-control datepicker" name="FechaInicio" value="<?php echo htmlspecialchars($FechaIni); ?>" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Fecha de Fin</label>
-                            <input type="text" class="form-control datepicker" name="FechaFin" value="<?php echo htmlspecialchars($FechaFin); ?>" autocomplete="off">
-                        </div>
-                        <input type="hidden" name="CodigoCuenta" value="<?php echo htmlspecialchars($Nombre, ENT_QUOTES, 'UTF-8'); ?>">
-                        <input type="hidden" name="NombreCuenta" value="<?php echo htmlspecialchars($Codigo, ENT_QUOTES, 'UTF-8'); ?>">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Aplicar Filtro</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-          <!-- SCRIPTS -->
+
+        <!-- SCRIPTS -->
         <script src="../../../../../js/libs/jquery/jquery-1.11.2.min.js"></script>
         <script src="../../../../../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
         <script src="../../../../../js/libs/bootstrap/bootstrap.min.js"></script>
@@ -368,9 +312,10 @@ $resultado = mysqli_stmt_get_result($stmt);
         <script src="../../../../../js/core/source/AppVendor.js"></script>
         <script src="../../../../../js/core/demo/Demo.js"></script>
         <script src="../../../../../js/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+
+        <!-- JS para ajustar layout dinámicamente y búsqueda + paginación -->
         <script>
             (function() {
-                // --- layout helpers (sin cambios) ---
                 // --- layout helpers (sin cambios) ---
                 var main = document.getElementById('main-wrapper');
                 var menubar = document.getElementById('menubar');
@@ -431,20 +376,28 @@ $resultado = mysqli_stmt_get_result($stmt);
                 }
 
                 // --- Paginación y búsqueda para la TABLA ---
-                var $rows = null;
+                var $rows = null; // Todas las filas .proveedor-row
                 var currentPage = 1;
                 var pageSize = parseInt($('#pageSize').val()) || 15;
 
                 function collectRows() {
-                    $rows = $("#mytable .factura-row");
+                    $rows = $("#mytable .proveedor-row");
                 }
 
                 function getFilteredIndices(filterText) {
                     var indices = [];
                     filterText = (filterText || "").toLowerCase();
+                    var activeOnly = $('#filterActive').is(':checked');
+
                     $rows.each(function(i) {
                         var $row = $(this);
-                        if (!filterText || $row.text().toLowerCase().indexOf(filterText) > -1) {
+                        var text = $row.text().toLowerCase();
+
+                        if (activeOnly && !$row.hasClass('activo-reciente')) {
+                            return; // continue
+                        }
+
+                        if (!filterText || text.indexOf(filterText) > -1) {
                             indices.push(i);
                         }
                     });
@@ -452,63 +405,119 @@ $resultado = mysqli_stmt_get_result($stmt);
                 }
 
                 function renderPage(page) {
-                    var indices = getFilteredIndices($('#search').val());
+                    var filter = $('#search').val().toLowerCase();
+                    var indices = getFilteredIndices(filter);
                     var total = indices.length;
                     var totalPages = Math.max(1, Math.ceil(total / pageSize));
-                    currentPage = Math.max(1, Math.min(page, totalPages));
-                    
-                    $('#mytable tr').hide(); // Ocultar todas las filas
+
+                    if (page < 1) page = 1;
+                    if (page > totalPages) page = totalPages;
+                    currentPage = page;
+
+                    // Ocultar todas las filas (tanto la principal como la de detalles)
+                    $('#mytable tr').hide();
 
                     var start = (currentPage - 1) * pageSize;
                     var end = start + pageSize;
                     for (var pos = start; pos < end && pos < total; pos++) {
-                        var $mainRow = $rows.eq(indices[pos]);
-                        var $detailRow = $mainRow.next('tr');
+                        var idx = indices[pos];
+                        var $mainRow = $rows.eq(idx);
+                        var $detailRow = $mainRow.next('tr'); // La fila de detalles es la siguiente
+                        
                         $mainRow.show();
-                        $detailRow.show();
+                        $detailRow.show(); // Mostramos la fila de detalles para que el collapse funcione
                     }
+
                     renderPaginationControls(totalPages, currentPage);
                 }
 
                 function renderPaginationControls(totalPages, activePage) {
-                    var $p = $('#paginationControls').empty();
+                    var $p = $('#paginationControls');
+                    $p.empty();
+
                     function btn(label, page, cls) {
-                        return $('<div class="page-btn"></div>').text(label).data('page', page).addClass(cls || '');
+                        var $b = $('<div class="page-btn"></div>').text(label).data('page', page);
+                        if (cls) $b.addClass(cls);
+                        return $b;
                     }
-                    $p.append(btn('«', activePage - 1, activePage === 1 ? 'disabled' : ''));
-                    var maxButtons = 7, half = Math.floor(maxButtons / 2);
-                    var start = Math.max(1, activePage - half), end = Math.min(totalPages, start + maxButtons - 1);
-                    if (end - start < maxButtons - 1) { start = Math.max(1, end - maxButtons + 1); }
-                    if (start > 1) { $p.append(btn(1, 1)); if (start > 2) $p.append($('<div class="page-btn disabled">...</div>')); }
-                    for (var i = start; i <= end; i++) { $p.append(btn(i, i, i === activePage ? 'active' : '')); }
-                    if (end < totalPages) { if (end < totalPages - 1) $p.append($('<div class="page-btn disabled">...</div>')); $p.append(btn(totalPages, totalPages)); }
-                    $p.append(btn('»', activePage + 1, activePage === totalPages ? 'disabled' : ''));
+
+                    var $prev = btn('«', activePage - 1);
+                    if (activePage === 1) $prev.addClass('disabled');
+                    $p.append($prev);
+
+                    var maxButtons = 7;
+                    var half = Math.floor(maxButtons / 2);
+                    var start = Math.max(1, activePage - half);
+                    var end = Math.min(totalPages, start + maxButtons - 1);
+                    if (end - start < maxButtons - 1) {
+                        start = Math.max(1, end - maxButtons + 1);
+                    }
+
+                    if (start > 1) {
+                        $p.append(btn(1, 1));
+                        if (start > 2) $p.append($('<div class="page-btn disabled">...</div>'));
+                    }
+
+                    for (var i = start; i <= end; i++) {
+                        var cls = (i === activePage) ? 'active' : '';
+                        $p.append(btn(i, i, cls));
+                    }
+
+                    if (end < totalPages) {
+                        if (end < totalPages - 1) $p.append($('<div class="page-btn disabled">...</div>'));
+                        $p.append(btn(totalPages, totalPages));
+                    }
+
+                    var $next = btn('»', activePage + 1);
+                    if (activePage === totalPages) $next.addClass('disabled');
+                    $p.append($next);
+
+                    $p.off('click').on('click', '.page-btn', function() {
+                        var $this = $(this);
+                        if ($this.hasClass('disabled') || $this.hasClass('active')) return;
+                        var toPage = $this.data('page');
+                        if (typeof toPage === 'number') {
+                            renderPage(toPage);
+                            $('html, body').animate({
+                                scrollTop: $('#mytable').offset().top - 80
+                            }, 200);
+                        }
+                    });
                 }
 
                 $(document).ready(function() {
                     collectRows();
                     renderPage(1);
-                    $('#search').on('input', function() { renderPage(1); });
-                    $('#pageSize').on('change', function() { pageSize = parseInt($(this).val()) || 15; renderPage(1); });
-                    $('#paginationControls').on('click', '.page-btn:not(.disabled, .active)', function() {
-                        renderPage($(this).data('page'));
-                        $('html, body').animate({ scrollTop: $('#mytable').offset().top - 80 }, 200);
+
+                    $('#search').on('input', function() {
+                        currentPage = 1;
+                        renderPage(1);
                     });
+
+                    $('#filterActive').on('change', function() {
+                        currentPage = 1;
+                        renderPage(1);
+                    });
+
+                    $('#pageSize').on('change', function() {
+                        pageSize = parseInt($(this).val()) || 15;
+                        currentPage = 1;
+                        renderPage(1);
+                    });
+
+                    // Icono de flecha en collapse
                     $('#mytable').on('show.bs.collapse', '.collapse', function () {
-                        $(this).closest('tr').prev('tr.factura-row').find('.fa').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                        $(this).closest('tr').prev('tr.proveedor-row').find('.fa').removeClass('fa-chevron-down').addClass('fa-chevron-up');
                     }).on('hide.bs.collapse', '.collapse', function () {
-                        $(this).closest('tr').prev('tr.factura-row').find('.fa').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                        $(this).closest('tr').prev('tr.proveedor-row').find('.fa').removeClass('fa-chevron-up').addClass('fa-chevron-down');
                     });
+
+                    computeAndApply();
                 });
-                 // AÑADIR ESTO: Inicializar los selectores de fecha en el modal
-    $('.datepicker').datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true,
-        todayHighlight: true,
-        language: 'es'
-    });
+
             })();
         </script>
     </section>
 </body>
+
 </html>
